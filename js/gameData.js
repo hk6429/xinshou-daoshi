@@ -256,7 +256,7 @@ export const LEGAL_POOL = [
     id: 'q_leave_quota', cat: '考核', diff: 1,
     scenario: '你想安排一年的請假額度，事假病假各有幾天？',
     law: '教師請假規則',
-    explain: '專任教師每學年事假 7 日、病假 28 日；因住院或重大傷病者得另依程序請延長病假。',
+    explain: '身為導師，你每學年有事假 7 日、病假 28 日（事假含家庭照顧假、身心調適假併計）；因住院或重大傷病得另依程序請延長病假。',
     choices: [
       { label: '一學年事假七日，病假二十八日', tier: 'best', effects: { honor: 2 }, octalysis: [4] },
       { label: '依此額度規劃，重大傷病走延長病假', tier: 'good', note: '加上延長病假的補充很實用，但屬補述，列為次佳', effects: { honor: 1 }, octalysis: [4] },
