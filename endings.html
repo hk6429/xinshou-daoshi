@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>班級結局圖鑑 — 新手導師養成記</title>
+<style>
+  :root{ --ink:#27332c; --paper:#fbf7ef; --board:#23463a; --board2:#2e5a49;
+    --green:#2e9e6b; --green-d:#1f7d52; --gold:#e7b14a; --line:#e6ddcb; --bad:#d9614e; }
+  *{box-sizing:border-box; font-family:"PingFang TC","Noto Sans TC",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  body{margin:0; background:#cdd8cf; color:var(--ink);}
+  .wrap{max-width:1100px; margin:0 auto; background:var(--paper); min-height:100vh;}
+  header{background:linear-gradient(160deg,var(--board2),var(--board)); color:#eafff4;
+    padding:22px 20px; position:relative;}
+  header::after{content:""; position:absolute; left:0; right:0; bottom:0; height:6px;
+    background:linear-gradient(#a9743f,#7c5026);}
+  header h1{margin:0; font-size:clamp(22px,4vw,30px); font-weight:900; letter-spacing:2px;}
+  header p{margin:6px 0 0; color:#cfeede; font-size:14px;}
+  header a.back{position:absolute; right:18px; top:22px; color:#eafff4; text-decoration:none;
+    background:#ffffff22; border:1px solid #ffffff55; border-radius:20px; padding:6px 14px;
+    font-size:13px; font-weight:700;}
+  .sec{padding:18px 18px 4px;}
+  .sec h2{font-size:18px; margin:0 0 4px; display:flex; align-items:center; gap:8px;}
+  .sec .tag{font-size:12px; font-weight:800; border-radius:12px; padding:3px 10px;}
+  .tag.good{background:#e3f6e9; color:var(--green-d); border:1px solid #bfe6cf;}
+  .tag.effort{background:#fcebe7; color:#b23b2a; border:1px solid #f0c2b9;}
+  .sec .lead{color:#5a6b60; font-size:13px; margin:0 0 12px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px;
+    padding:0 18px 6px;}
+  .card{background:#fff; border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    box-shadow:0 3px 10px #0001; display:flex; flex-direction:column;}
+  .card .pic{aspect-ratio:4/3; background:#eef5ef center/cover no-repeat; position:relative;}
+  .card .pic .ph{position:absolute; inset:0; display:grid; place-items:center; color:#9fb3a6;
+    font-size:13px;}
+  .card.eff .pic{background-color:#f7ece9;}
+  .card .body{padding:11px 13px 13px;}
+  .card .t{font-weight:900; font-size:16px; color:var(--ink);}
+  .card .d{font-size:12.5px; color:#5a6b60; line-height:1.6; margin:5px 0 9px;}
+  .card .m{font-size:12px; color:#3a4a40; background:#f3f7f3; border-left:3px solid var(--green);
+    border-radius:6px; padding:7px 9px; line-height:1.55;}
+  .card.eff .m{border-left-color:var(--bad); background:#fbf1ef;}
+  .card .m b{color:var(--green-d);}
+  .card.eff .m b{color:#b23b2a;}
+  footer{padding:20px; text-align:center; color:#7c8a7f; font-size:12px;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🏫 班級結局圖鑑</h1>
+      <p>一學年的選擇，決定你帶出什麼樣的班級。共 30 種結局——20 正向、10 待努力。</p>
+      <a class="back" href="app.html">← 回遊戲</a>
+    </header>
+
+    <div class="sec">
+      <h2>🌟 正向結局 <span class="tag good">20 種</span></h2>
+      <p class="lead">把法規、班級經營與身教都顧好，就能解鎖這些結局。</p>
+    </div>
+    <div class="grid" id="good"></div>
+
+    <div class="sec" style="margin-top:10px;">
+      <h2>💪 待努力結局 <span class="tag effort">10 種</span></h2>
+      <p class="lead">這些代表某個面向失衡了——下一年的成長方向。</p>
+    </div>
+    <div class="grid" id="effort"></div>
+
+    <footer>新手導師養成記 ・ 結局依「結業時的最終狀態」自動判定</footer>
+  </div>
+
+  <script type="module">
+    import { ENDINGS } from './js/endings.js';
+    const esc = (s) => String(s).replace(/[&<>]/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+    function card(e) {
+      const eff = e.kind === 'effort';
+      return `<div class="card ${eff ? 'eff' : ''}">
+        <div class="pic" style="background-image:url('${e.img}')">
+          <div class="ph">畫面生成中…</div>
+        </div>
+        <div class="body">
+          <div class="t">${esc(e.title)}</div>
+          <div class="d">${esc(e.desc)}</div>
+          <div class="m"><b>達成條件</b>：${esc(e.mechanism)}</div>
+        </div>
+      </div>`;
+    }
+    document.getElementById('good').innerHTML =
+      ENDINGS.filter((e) => e.kind === 'good').map(card).join('');
+    document.getElementById('effort').innerHTML =
+      ENDINGS.filter((e) => e.kind === 'effort').map(card).join('');
+    // 圖片載入成功就隱藏「生成中」字樣
+    document.querySelectorAll('.card .pic').forEach((pic) => {
+      const url = pic.style.backgroundImage.slice(5, -2);
+      const img = new Image();
+      img.onload = () => { const ph = pic.querySelector('.ph'); if (ph) ph.remove(); };
+      img.src = url;
+    });
+  </script>
+</body>
+</html>

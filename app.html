@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>新手導師養成記</title>
+<style>
+  :root{
+    --ink:#27332c; --paper:#fbf7ef; --board:#23463a; --board2:#2e5a49;
+    --green:#2e9e6b; --green-d:#1f7d52; --gold:#e7b14a; --line:#e6ddcb;
+  }
+  *{box-sizing:border-box; font-family:"PingFang TC","Noto Sans TC",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  html,body{height:100%; margin:0; overflow:hidden;}
+  body{background:#cdd8cf; display:flex;}
+
+  .app{flex:1; display:flex; flex-direction:column; min-height:0;
+    width:100%; max-width:1060px; margin:0 auto; height:100dvh;
+    background:var(--paper); overflow:hidden;}
+  @media (min-width:900px){
+    body{padding:18px;}
+    .app{height:calc(100dvh - 36px); border-radius:22px;
+      box-shadow:0 18px 50px rgba(0,0,0,.22);}
+  }
+
+  /* 畫面切換 */
+  .screen{display:none; flex:1; min-height:0; flex-direction:column;}
+  .screen.active{display:flex;}
+
+  /* ───────── 首頁 ───────── */
+  #cover{align-items:center; justify-content:center; text-align:center;
+    padding:20px; position:relative; overflow-y:auto;
+    background:radial-gradient(120% 90% at 50% 0%, #effaef 0%, var(--paper) 60%);}
+  #cover .badge{font-size:13px; font-weight:800; color:var(--green-d);
+    background:#e3f6e9; border:1px solid #bfe6cf; border-radius:20px; padding:5px 14px;}
+  #cover h1{font-size:clamp(28px,5.4vw,48px); font-weight:900; color:var(--board);
+    margin:12px 0 6px; letter-spacing:2px;}
+  #cover .sub{font-size:clamp(13.5px,2.2vw,16px); color:#5a6b60; line-height:1.6; max-width:30em;}
+  #cover .heroes{display:flex; gap:8px; align-items:flex-end; justify-content:center;
+    margin:10px 0 4px;}
+  #cover .heroes img{height:clamp(120px,22vh,200px); filter:drop-shadow(0 10px 14px #0002);}
+  #cover .start{margin-top:12px; border:none; cursor:pointer; background:var(--green);
+    color:#fff; font-weight:900; font-size:clamp(16px,2.4vw,19px); border-radius:16px;
+    padding:14px 44px; box-shadow:0 5px 0 var(--green-d); letter-spacing:2px;}
+  #cover .start:active{transform:translateY(3px); box-shadow:0 2px 0 var(--green-d);}
+  #cover .tags{margin-top:16px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
+  #cover .tags span{font-size:12px; color:#7c8a7f; background:#fff; border:1px solid var(--line);
+    border-radius:14px; padding:3px 10px;}
+  #cover .endlink{margin-top:14px; color:var(--green-d); font-weight:700; font-size:13.5px;
+    text-decoration:none; border-bottom:1.5px dashed var(--green-d); padding-bottom:2px;}
+  #cover .endlink:hover{color:var(--green);}
+
+  /* ───────── 性別選擇 ───────── */
+  #gender{padding:20px; align-items:center; justify-content:center; text-align:center;
+    overflow-y:auto;}
+  #gender h2{font-size:clamp(20px,3.4vw,28px); font-weight:900; color:var(--board); margin:0 0 4px;}
+  #gender .hint{color:#5a6b60; font-size:14px; margin-bottom:18px;}
+  #gender .cards{display:flex; gap:clamp(12px,3vw,24px);
+    justify-content:center; flex-wrap:wrap;}
+  .gcard{flex:0 0 clamp(160px,40vw,230px); width:clamp(160px,40vw,230px);
+    background:#fff; border:3px solid var(--line);
+    border-radius:20px; padding:12px 12px 14px; cursor:pointer; transition:.15s;
+    box-shadow:0 4px 0 #e7e0d0; display:flex; flex-direction:column; align-items:center;}
+  .gcard:hover{transform:translateY(-3px); border-color:var(--green);}
+  .gcard.sel{border-color:var(--green); background:#f1fbf5; box-shadow:0 4px 0 var(--green-d);}
+  .gcard .pic{width:100%; height:clamp(170px,26vh,220px); border-radius:14px; overflow:hidden;
+    background:#eef5ef;}
+  .gcard .pic img{width:100%; height:100%; object-fit:cover; object-position:top center; display:block;}
+  .gcard .label{margin-top:10px; font-weight:900; font-size:18px; color:var(--ink);}
+  .gcard .desc{font-size:12.5px; color:#6b7d72; margin-top:3px; line-height:1.5;}
+  #gender .enter{margin-top:20px; border:none; cursor:pointer; background:var(--green);
+    color:#fff; font-weight:900; font-size:17px; border-radius:14px; padding:13px 40px;
+    box-shadow:0 4px 0 var(--green-d); opacity:.45; pointer-events:none; letter-spacing:2px;}
+  #gender .enter.on{opacity:1; pointer-events:auto;}
+  #gender .enter:active{transform:translateY(2px); box-shadow:0 2px 0 var(--green-d);}
+  #gender .back{margin-top:12px; background:none; border:none; color:#8a9890; cursor:pointer;
+    font-size:13px; text-decoration:underline;}
+
+  /* ───────── 遊戲畫面 ───────── */
+  .board{background:linear-gradient(160deg,var(--board2),var(--board)); color:#eafff4;
+    padding:12px 16px 14px; position:relative; flex:none;}
+  .board::after{content:""; position:absolute; left:0; right:0; bottom:0; height:6px;
+    background:linear-gradient(#a9743f,#7c5026);}
+  .board-top{display:flex; align-items:center; gap:10px;}
+  .chalk-title{font-size:clamp(15px,2.2vw,19px); font-weight:800; letter-spacing:1px;
+    text-shadow:0 1px 0 rgba(0,0,0,.25);}
+  .week-badge{margin-left:auto; background:#ffffff22; border:1px solid #ffffff44;
+    border-radius:20px; padding:3px 12px; font-size:13px; font-weight:700; white-space:nowrap;}
+  .day-dots{display:flex; gap:5px; margin-top:9px;}
+  .day-dots i{width:28px; height:6px; border-radius:4px; background:#ffffff2e;}
+  .day-dots i.on{background:var(--gold);}
+
+  .hud{display:flex; gap:7px; padding:9px 14px; background:#fff;
+    border-bottom:1px solid var(--line); flex-wrap:wrap; flex:none;}
+  .chip{display:flex; align-items:center; gap:5px; background:#f1f6f1; border-radius:20px;
+    padding:5px 10px; font-size:12.5px; font-weight:700; color:#3a4a40;}
+  .chip.rank{background:linear-gradient(120deg,#fff2d4,#ffe6b0); color:#8a6210;
+    border:1px solid #f0d28a;}
+  .chip.streak{background:#fff0e8; color:#c4521f; border:1px solid #f3c8ac;}
+  .chip.hp-low{background:#fcebe7; color:#b23b2a; border:1px solid #f0c2b9; animation:pulse 1.1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .chip b{color:var(--green-d);}
+
+  /* 班級五維（CD2 成就 / CD4 擁有：讓努力可見可量化） */
+  .stats5{display:flex; gap:5px; padding:7px 12px 9px; background:#fff;
+    border-bottom:1px solid var(--line); flex:none;}
+  .stats5 .s{flex:1; min-width:0; text-align:center; background:#f4f8f4;
+    border:1px solid #e8efe8; border-radius:10px; padding:4px 2px 5px;}
+  .stats5 .s .k{font-size:10px; color:#7c8a7f; font-weight:800; letter-spacing:.5px;}
+  .stats5 .s .v{font-size:15px; font-weight:900; color:#2e6b4c; line-height:1.15;}
+  .stats5 .s .v .d{font-size:10px; font-weight:800; margin-left:1px;}
+  .stats5 .s .v .d.up{color:var(--green);} .stats5 .s .v .d.dn{color:#d9614e;}
+  .stats5 .s.hi .v{color:var(--green);} .stats5 .s.low .v{color:#d9614e;}
+  .stats5 .s .bar{height:3px; border-radius:2px; background:#e2ede3; margin-top:3px; overflow:hidden;}
+  .stats5 .s .bar i{display:block; height:100%; background:var(--green); border-radius:2px; transition:width .35s;}
+  .stats5 .s.low .bar i{background:#d9614e;} .stats5 .s.hi .bar i{background:#16a34a;}
+
+  .main{flex:1; min-height:0; display:flex; flex-direction:column;}
+  @media (min-width:900px){ .main{display:grid; grid-template-columns:1.05fr 1fr; gap:0;} }
+
+  .scene{position:relative; overflow:hidden; flex:none;
+    height:clamp(190px,32vh,320px); background:#eaf3ec center top/cover no-repeat;}
+  .scene img{position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:center bottom; display:block;}
+  @media (min-width:900px){ .scene{height:auto; min-height:0;}
+    .scene img{object-position:left center;} }
+  .scene::after{content:""; position:absolute; left:0; right:0; bottom:0; height:46%;
+    background:linear-gradient(transparent,rgba(20,30,24,.34));}
+  .scene-week{position:absolute; left:12px; top:11px; z-index:2;
+    background:#ffffffe6; color:#234a3c; font-weight:800; font-size:12.5px;
+    padding:4px 11px; border-radius:12px; box-shadow:0 2px 8px #0002;}
+  .scene-tag{position:absolute; left:12px; bottom:10px; z-index:2; background:#0007; color:#fff;
+    font-size:11px; padding:3px 9px; border-radius:12px;}
+
+  .qa{flex:1; min-height:0; display:flex; flex-direction:column; padding:0 16px 10px;}
+  @media (min-width:900px){ .qa{padding:16px 18px;} }
+  .speech{margin-top:12px; position:relative; z-index:2; background:#fff; border-radius:16px;
+    padding:12px 14px; box-shadow:0 4px 14px #0001; border:1px solid var(--line); flex:none;}
+  @media (min-width:900px){ .speech{margin-top:0;} }
+  .speech .who{font-size:12px; color:var(--green-d); font-weight:800; margin-bottom:4px;}
+  .speech .q{font-size:clamp(14.5px,1.9vw,16px); font-weight:700; line-height:1.55; color:var(--ink);}
+
+  .opts{margin-top:10px; flex:1; min-height:0; display:flex; flex-direction:column;
+    gap:clamp(6px,1vh,10px); overflow:auto;}
+  .opt{display:flex; align-items:center; gap:11px; background:#fff; border:2px solid #e4ded0;
+    border-radius:13px; padding:clamp(9px,1.4vh,13px) 13px; cursor:pointer; transition:.12s;
+    box-shadow:0 2px 0 #e7e0d0;}
+  .opt:hover{border-color:var(--green); background:#f3fbf5; transform:translateY(-1px);}
+  .opt .n{flex:none; width:25px; height:25px; border-radius:50%; background:#eef5ef;
+    color:var(--green-d); font-weight:800; display:grid; place-items:center; font-size:13.5px;}
+  .opt .t{font-size:clamp(13px,1.7vw,14.5px); line-height:1.4; color:#34423a; font-weight:600;}
+  .opt.sel-best{border-color:var(--green); background:#e8f8ee;}
+  .opt.sel-good{border-color:#e0a92a; background:#fff6e2;}
+  .opt.sel-bad{border-color:#d9614e; background:#fcebe7;}
+  .opt.dim{opacity:.5;}
+  .verdict{margin-top:9px; flex:none; border-radius:12px; padding:10px 13px; font-size:13.5px;
+    font-weight:700; line-height:1.5; display:none;}
+  .verdict.best{display:block; background:#e8f8ee; color:var(--green-d); border:1.5px solid #bfe6cf;}
+  .verdict.good{display:block; background:#fff6e2; color:#9a6a00; border:1.5px solid #f0d28a;}
+  .verdict.bad{display:block; background:#fcebe7; color:#b23b2a; border:1.5px solid #f0c2b9;}
+  .nextbtn{display:none; margin-top:10px; flex:none; width:100%; border:none; cursor:pointer;
+    background:var(--green); color:#fff; font-weight:800; font-size:15px; border-radius:12px;
+    padding:12px; box-shadow:0 3px 0 var(--green-d);}
+  .nextbtn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--green-d);}
+  .foot{padding:7px 14px; text-align:center; color:#7c8a7f; font-size:11px;
+    background:#fff7e6; border-top:1px dashed #e8d28c; flex:none;}
+</style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ───────── 首頁 ───────── -->
+    <section class="screen active" id="cover">
+      <span class="badge">台灣國中導師・班級經營養成</span>
+      <h1>新手導師養成記</h1>
+      <div class="sub">40 週校園日常，從開學到畢業。<br>用教師法、正向管教與通報法規，練成你的導師段位。</div>
+      <div class="heroes">
+        <img src="assets/refs/male_card.png" alt="男老師" />
+        <img src="assets/refs/female_card.png" alt="女老師" />
+      </div>
+      <button class="start" id="startBtn">開始遊戲</button>
+      <div class="tags"><span>⚖️ 法規素養</span><span>🎖 導師段位</span><span>🏫 班級經營</span><span>🔁 每局不同</span></div>
+      <a class="endlink" href="endings.html">🏫 查看 30 種班級結局圖鑑 →</a>
+    </section>
+
+    <!-- ───────── 性別選擇 ───────── -->
+    <section class="screen" id="gender">
+      <h2>選擇你的老師</h2>
+      <div class="hint">不同選擇，整套班級畫面跟著換。</div>
+      <div class="cards">
+        <div class="gcard" data-g="m">
+          <div class="pic"><img src="assets/refs/male_card.png" alt="男老師" /></div>
+          <div class="label">男老師</div>
+          <div class="desc">沉穩內斂・大乃風格</div>
+        </div>
+        <div class="gcard" data-g="f">
+          <div class="pic"><img src="assets/refs/female_card.png" alt="女老師" /></div>
+          <div class="label">女老師</div>
+          <div class="desc">溫柔專業・親和力強</div>
+        </div>
+      </div>
+      <button class="enter" id="enterBtn">進入遊戲</button>
+      <button class="back" id="backBtn">← 回首頁</button>
+    </section>
+
+    <!-- ───────── 遊戲畫面 ───────── -->
+    <section class="screen" id="game">
+      <div class="board">
+        <div class="board-top">
+          <div class="chalk-title">📕 新手導師養成記</div>
+          <div class="week-badge" id="badge">W8 ・ 第 2 / 5 天</div>
+        </div>
+        <div class="day-dots"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="hud">
+        <span class="chip">💪 心力 <b id="chip-hp">80</b></span>
+        <span class="chip">💰 班費 <b id="chip-budget">0</b></span>
+        <span class="chip">⚖️ 素養 <b id="chip-lit">0</b></span>
+        <span class="chip streak" id="chip-streak">🔥 連對 0</span>
+        <span class="chip rank" id="chip-rank">🎖 新手導師</span>
+      </div>
+      <div class="stats5" id="stats5"></div>
+      <div class="main">
+        <div class="scene">
+          <img id="sceneimg" src="assets/scenes/w8.png" alt="場景" />
+          <span class="scene-week" id="sceneweek">第八週・校園危機處理</span>
+          <span class="scene-tag" id="scenetag">🏫 男老師・走廊通報現場</span>
+        </div>
+        <div class="qa">
+          <div class="speech">
+            <div class="who" id="who"></div>
+            <div class="q" id="q"></div>
+          </div>
+          <div class="opts" id="opts"></div>
+          <div class="verdict" id="verdict"></div>
+          <button class="nextbtn" id="nextbtn">下一題 →</button>
+        </div>
+      </div>
+      <div class="foot" id="foot">男老師版・桌機橫向一頁看完，手機自動疊成直式，整頁免捲動</div>
+    </section>
+
+  </div>
+
+  <script type="module">
+    import { createInitialState, saveState, literacyRank } from './js/state.js';
+    import { resolveWeek } from './js/gameData.js';
+    import { applyChoice, evalBranch, checkHiddenCombo, advanceWeek, gradeChoice, LITERACY_BY_TIER } from './js/engine.js';
+    import { selectEnding } from './js/endings.js';
+
+    const c = (id) => document.getElementById(id);
+    const L = ['A','B','C','D','E'];
+    const esc = (s) => String(s).replace(/[&<>]/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+    const tierClass = (t) => t === 'best' ? 'best' : t === 'good' ? 'good' : 'bad';
+    const dots = () => document.querySelectorAll('#game .day-dots i');
+
+    // 依種子穩定洗牌（讓正解不固定在 A；選項物件帶 id，計分/勳章不受影響）
+    function seededShuffle(arr, seedStr) {
+      let h = 2166136261;
+      for (const ch of String(seedStr)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+      let s = h >>> 0;
+      const rand = () => { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+      return a;
+    }
+
+    // ── 畫面切換 ──
+    let GENDER = 'm';
+    const screens = { cover: c('cover'), gender: c('gender'), game: c('game') };
+    const show = (name) => { Object.values(screens).forEach((s) => s.classList.remove('active'));
+      screens[name].classList.add('active'); };
+    c('startBtn').onclick = () => show('gender');
+    c('backBtn').onclick = () => show('cover');
+    let picked = null;
+    document.querySelectorAll('.gcard').forEach((card) => {
+      card.onclick = () => {
+        document.querySelectorAll('.gcard').forEach((x) => x.classList.remove('sel'));
+        card.classList.add('sel'); picked = card.dataset.g; c('enterBtn').classList.add('on');
+      };
+    });
+    c('enterBtn').onclick = () => { if (!picked) return; GENDER = picked; show('game'); startGame(); };
+
+    // ── 真引擎遊戲迴圈 ──
+    let state, week, queue, weekStart, scripted, dayDone, curBeat, phase, locked, streak, bestStreak;
+
+    const sceneFor = (i) => `assets/scenes/w${i + 1}${GENDER === 'f' ? '_female' : ''}.png`;
+
+    // 班級五維：決定 30 種結局的關鍵指標，全程可見（CD2 成就 / CD4 擁有 / CD1 使命）
+    const STAT_META = [['cohesion','凝聚'],['climate','班風'],['trust','信任'],['honor','榮譽'],['roleModel','身教']];
+    function paintStats(prev) {
+      c('stats5').innerHTML = STAT_META.map(([k, name]) => {
+        const v = state.stats[k];
+        const cls = v >= 75 ? 'hi' : v <= 35 ? 'low' : '';
+        const d = prev ? v - prev.stats[k] : 0;
+        const dtxt = d ? `<span class="d ${d > 0 ? 'up' : 'dn'}">${d > 0 ? '+' : ''}${d}</span>` : '';
+        return `<div class="s ${cls}"><div class="k">${name}</div>` +
+          `<div class="v">${v}${dtxt}</div><div class="bar"><i style="width:${v}%"></i></div></div>`;
+      }).join('');
+    }
+
+    function paintHud(prevForStats) {
+      const hp = state.resources.hp;
+      c('chip-hp').textContent = hp;
+      c('chip-hp').parentElement.classList.toggle('hp-low', hp <= 20);
+      c('chip-budget').textContent = state.resources.budget;
+      c('chip-lit').textContent = state.literacy || 0;
+      c('chip-streak').textContent = `🔥 連對 ${streak}`;
+      c('chip-rank').textContent = '🎖 ' + literacyRank(state.literacy || 0);
+      paintStats(prevForStats);
+    }
+
+    function startGame() {
+      state = createInitialState();
+      streak = 0; bestStreak = 0;
+      saveState(state, localStorage);
+      c('foot').textContent = `${GENDER === 'f' ? '女' : '男'}老師版・40 週導師修煉・整頁免捲動`;
+      startWeek();
+    }
+
+    function startWeek() {
+      if (state.pendingAdvance) { state = advanceWeek(state); state.pendingAdvance = false; saveState(state, localStorage); }
+      if (state.week >= 40) return endGame();
+      week = resolveWeek(state.week, state.runSeed);
+      weekStart = structuredClone(state);
+      if (week.onEnter && Object.keys(week.onEnter).length) {
+        state = applyChoice(state, { id: `onEnter_w${state.week}`, effects: week.onEnter, octalysis: [] });
+      }
+      queue = [...week.days];
+      scripted = new Set(week.days.map((d) => d.id));
+      dayDone = 0;
+      c('sceneimg').src = sceneFor(state.week);
+      c('sceneweek').textContent = week.title;
+      c('scenetag').textContent = `🏫 ${GENDER === 'f' ? '女' : '男'}老師`;
+      nextBeat();
+    }
+
+    function nextBeat() {
+      if (queue.length === 0) return settle();
+      const beat = queue.shift();
+      const isScripted = scripted.has(beat.id);
+      if (isScripted) dayDone += 1;
+      curBeat = beat; phase = 'play'; locked = false;
+      const total = week.days.length;
+      c('badge').textContent = `W${state.week} ・ ${isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況'}`;
+      dots().forEach((d, k) => d.classList.toggle('on', k < dayDone - (isScripted ? 1 : 0)));
+      c('who').textContent = beat.law ? beat.law.replace(/[（）()]/g, '') || '情境判讀' : '情境判讀';
+      c('q').textContent = beat.prompt;
+      c('verdict').className = 'verdict'; c('verdict').textContent = '';
+      c('nextbtn').style.display = 'none';
+      const op = c('opts'); op.innerHTML = '';
+      const shuffled = seededShuffle(beat.choices, `${state.runSeed}_${beat.id}`);
+      shuffled.forEach((ch, k) => {
+        const o = document.createElement('div'); o.className = 'opt';
+        o.innerHTML = `<span class="n">${L[k]}</span><span class="t">${esc(ch.label)}</span>`;
+        o.onclick = () => choose(o, ch);
+        op.appendChild(o);
+      });
+      paintHud();
+    }
+
+    function choose(o, ch) {
+      if (locked) return; locked = true;
+      const beforeChoice = structuredClone(state);
+      state = applyChoice(state, ch);
+      // 連對：最佳解 +1，其餘答對歸零（CD8 損失閃避 + CD2 成就）
+      let streakBroke = false;
+      if (ch.tier === 'best') { streak += 1; if (streak > bestStreak) bestStreak = streak; }
+      else if (ch.tier) { if (streak >= 2) streakBroke = true; streak = 0; }
+      const branch = evalBranch(state, curBeat);
+      if (branch) queue.unshift(branch);
+      const tc = tierClass(ch.tier);
+      [...c('opts').children].forEach((x) => { if (x !== o) x.classList.add('dim'); });
+      o.classList.add('sel-' + tc);
+      dots().forEach((d, k) => d.classList.toggle('on', k < dayDone));
+      const lit = gradeChoice(ch).literacy;
+      const head = ch.tier === 'best' ? `✓ 最佳解（+${LITERACY_BY_TIER.best} 素養）`
+        : ch.tier === 'good' ? `△ 次佳解（+${LITERACY_BY_TIER.good} 素養）`
+        : ch.tier === 'illegal' ? '✗ 做法可行但不符合法律（0 素養）'
+        : '✗ 失分（0 素養）';
+      const note = ch.note ? `${esc(ch.note)}<br>` : '';
+      const law = curBeat.law ? `<b>📖 ${esc(curBeat.law)}</b> ` : '';
+      const streakLine = streak >= 3 ? `<div style="margin-top:5px">🔥 連對 ${streak} 連！手感正燙</div>`
+        : streakBroke ? `<div style="margin-top:5px">💔 連對中斷，重新累積</div>` : '';
+      c('verdict').className = 'verdict ' + tc;
+      c('verdict').innerHTML = `<div>${head}</div>` + streakLine +
+        `<div style="font-weight:600;margin-top:5px">${note}${law}${esc(curBeat.explain || '')}</div>`;
+      c('nextbtn').textContent = queue.length ? '下一題 →' : '本週結算 ✓';
+      c('nextbtn').style.display = 'block';
+      paintHud(beforeChoice); // 帶上選擇前狀態，讓五維秀出本次 +/- 變化
+    }
+
+    function settle() {
+      if (week.type === 'milestone') state = checkHiddenCombo(state, week);
+      state.pendingAdvance = true; saveState(state, localStorage);
+      phase = 'settle';
+      const dLit = (state.literacy || 0) - (weekStart.literacy || 0);
+      const newBadges = state.badges.filter((b) => !weekStart.badges.includes(b));
+      const dHp = state.resources.hp - weekStart.resources.hp;
+      const dBudget = state.resources.budget - weekStart.resources.budget;
+      c('who').textContent = '本週結算';
+      c('q').textContent = `${week.title} 完成！`;
+      c('opts').innerHTML = '';
+      const badgeLine = newBadges.length ? `<div style="margin-top:5px">🎖 獲得勳章：${newBadges.map(esc).join('、')}</div>` : '';
+      const statDelta = STAT_META.map(([k, name]) => {
+        const d = state.stats[k] - weekStart.stats[k];
+        return d ? `${name}${d > 0 ? '+' : ''}${d}` : null;
+      }).filter(Boolean).join('　') || '五維持平';
+      const trend = selectEnding(state);
+      const trendLine = `<div style="margin-top:6px">🧭 照這樣下去你會走向：<b>${esc(trend.title)}</b>` +
+        `（${trend.kind === 'good' ? '🌟 正向' : '💪 待努力'}）</div>`;
+      c('verdict').className = 'verdict best';
+      c('verdict').innerHTML =
+        `<div>素養 +${dLit}（累積 ${state.literacy || 0}・${literacyRank(state.literacy || 0)}）</div>` +
+        `<div style="font-weight:600;margin-top:5px">心力 ${dHp >= 0 ? '+' : ''}${dHp}　班費 ${dBudget >= 0 ? '+' : ''}${dBudget}</div>` +
+        `<div style="font-weight:600;margin-top:5px">📊 ${statDelta}</div>` +
+        badgeLine + trendLine;
+      c('nextbtn').textContent = state.week >= 39 ? '完成一學年 ▶' : '進入下一週 ▶';
+      c('nextbtn').style.display = 'block';
+      paintHud(weekStart); // 五維面板顯示整週增減
+    }
+
+    function endGame() {
+      phase = 'end';
+      const acc = state.answered ? Math.round((state.correct / state.answered) * 100) : 0;
+      const ending = selectEnding(state);
+      const isGood = ending.kind === 'good';
+      c('badge').textContent = '結業';
+      dots().forEach((d) => d.classList.add('on'));
+      // 結局畫面：以結局圖當場景
+      c('sceneimg').src = ending.img;
+      c('sceneweek').textContent = isGood ? '🌟 正向結局' : '💪 待努力結局';
+      c('scenetag').textContent = `🏫 ${GENDER === 'f' ? '女' : '男'}老師`;
+      c('who').textContent = `🎓 結局：${ending.title}`;
+      c('q').textContent = ending.desc;
+      c('opts').innerHTML = '';
+      c('verdict').className = 'verdict ' + (isGood ? 'best' : 'bad');
+      c('verdict').innerHTML =
+        `<div>達成條件：${esc(ending.mechanism)}</div>` +
+        `<div style="font-weight:600;margin-top:6px">法規素養 ${state.literacy || 0} 分（${literacyRank(state.literacy || 0)}）・` +
+        `答對率 ${acc}%・勳章 ${state.badges.length} 枚・最佳連對 ${bestStreak}</div>` +
+        `<div style="margin-top:6px"><a href="endings.html" style="color:inherit;font-weight:700">查看全部 30 種結局 →</a></div>`;
+      c('nextbtn').textContent = '換一所學校再戰 ▶';
+      c('nextbtn').style.display = 'block';
+      paintHud();
+    }
+
+    c('nextbtn').onclick = () => {
+      if (phase === 'play') nextBeat();
+      else if (phase === 'settle') startWeek();
+      else startGame();
+    };
+  </script>
+</body>
+</html>
