@@ -18,19 +18,34 @@ export function createInitialState(runSeed) {
   };
 }
 
-// 依素養分回傳導師段位
+// 依素養分回傳導師段位（門檻對齊 40 週實測天花板約 2000，分四段穩定爬升）
 export function literacyRank(literacy) {
-  if (literacy >= 120) return '法規專家導師';
-  if (literacy >= 70) return '專業導師';
-  if (literacy >= 30) return '合格導師';
+  if (literacy >= 1700) return '法規專家導師';
+  if (literacy >= 1000) return '專業導師';
+  if (literacy >= 350) return '合格導師';
   return '新手導師';
+}
+
+// 五維「分段增益遞減」：越接近滿值，每點正向增益越難拿（CD2 養成曲線）；
+// 損失一律全額（CD8）。讓里程碑週不再一週把一條線從 50 灌到 100。
+// 0–60 全額、60–80 六折、80–100 三折。小增益在低值仍全額、超大增益仍可填到 100。
+export function addStat(current, delta) {
+  if (delta <= 0) return clamp(current + delta, 0, 100);
+  let v = current, remaining = delta;
+  for (const [cap, eff] of [[60, 1], [80, 0.6], [100, 0.3]]) {
+    if (v >= cap) continue;
+    const cost = (cap - v) / eff; // 漲到 cap 需要多少原始增益
+    if (remaining <= cost) { v += remaining * eff; remaining = 0; break; }
+    v = cap; remaining -= cost;
+  }
+  return clamp(v, 0, 100);
 }
 
 export function applyEffects(state, effects = {}) {
   const next = structuredClone(state);
   for (const key of STAT_KEYS) {
     if (effects[key] != null) {
-      next.stats[key] = clamp(next.stats[key] + effects[key], 0, 100);
+      next.stats[key] = addStat(next.stats[key], effects[key]);
     }
   }
   if (effects.hp != null) next.resources.hp = Math.max(0, next.resources.hp + effects.hp);

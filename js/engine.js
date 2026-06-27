@@ -52,9 +52,17 @@ export function checkHiddenCombo(state, milestone) {
   return next;
 }
 
+// 班級經營的熵：每週五維自然滑落，不持續經營就退步（CD8 損失 + CD2 維持壓力）。
+// 地板 30，避免死亡螺旋到 0；想跌破 30 仍可透過實際失分選項達成（保留待努力結局）。
+const WEEKLY_DECAY = 2;
+const STAT_KEYS = ['cohesion', 'climate', 'trust', 'honor', 'roleModel'];
+
 export function advanceWeek(state) {
   let next = structuredClone(state);
   next.week += 1;
+  for (const k of STAT_KEYS) {
+    next.stats[k] = Math.max(30, next.stats[k] - WEEKLY_DECAY);
+  }
   if (next.week === 10 && next.flags.delayedPenaltyW10) {
     next = applyEffects(next, { trust: -10 });
     next.flags.delayedPenaltyW10 = false;
