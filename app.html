@@ -580,6 +580,19 @@
       else startGame();
     };
 
+    // 鍵盤操作：數字 1–5 = 選項 A–E（未鎖定時直接作答）；Enter／空白 = 下一步（按鈕已出現時）
+    document.addEventListener('keydown', (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const next = c('nextbtn');
+      if ((e.key === 'Enter' || e.key === ' ') && next && next.style.display !== 'none') {
+        e.preventDefault(); next.click(); return;
+      }
+      if (e.key >= '1' && e.key <= '5' && !locked) {
+        const opt = c('opts').querySelectorAll('.opt')[Number(e.key) - 1];
+        if (opt) { e.preventDefault(); opt.click(); }
+      }
+    });
+
     // 題目回報：開預填好的 email，自動帶上週次／題目 ID／情境，作者一看就知道是哪一題
     c('reportbtn').onclick = () => {
       const b = curBeat || {};
