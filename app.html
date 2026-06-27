@@ -162,6 +162,10 @@
     background:var(--green); color:#fff; font-weight:800; font-size:15px; border-radius:12px;
     padding:12px; box-shadow:0 3px 0 var(--green-d);}
   .nextbtn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--green-d);}
+  .reportbtn{display:block; margin:8px auto 0; border:1px solid #d9b34d; cursor:pointer;
+    background:transparent; color:#9a7b1e; font-weight:600; font-size:12px; border-radius:10px;
+    padding:6px 12px;}
+  .reportbtn:hover{background:#fff7e6;}
   .foot{padding:7px 14px; text-align:center; color:#7c8a7f; font-size:11px;
     background:#fff7e6; border-top:1px dashed #e8d28c; flex:none;}
 </style>
@@ -234,6 +238,7 @@
           <div class="opts" id="opts"></div>
           <div class="verdict" id="verdict"></div>
           <button class="nextbtn" id="nextbtn">下一題 →</button>
+          <button class="reportbtn" id="reportbtn" title="這題答案有誤或有爭議？回報給作者">🚩 這題答案不對／有爭議？回報</button>
         </div>
       </div>
       <div class="foot" id="foot">男老師版・桌機橫向一頁看完，手機自動疊成直式，整頁免捲動</div>
@@ -469,6 +474,23 @@
       if (phase === 'play') nextBeat();
       else if (phase === 'settle') startWeek();
       else startGame();
+    };
+
+    // 題目回報：開預填好的 email，自動帶上週次／題目 ID／情境，作者一看就知道是哪一題
+    c('reportbtn').onclick = () => {
+      const b = curBeat || {};
+      const wm = (week && week.meta) || {};
+      const subject = `【新手導師養成記】題目回報：${b.id || '未知題'}`;
+      const body =
+        '我覺得這題的答案有誤或有爭議：\n\n' +
+        `週次：${wm.label || ('第' + ((state ? state.week : 0) + 1) + '週')}${wm.badge ? '・' + wm.badge : ''}\n` +
+        `題目 ID：${b.id || '（無）'}\n` +
+        `法源／主題：${b.law || '（無）'}\n` +
+        `情境：${b.prompt || '（無）'}\n\n` +
+        '我認為的問題（請描述哪個選項該對／該錯、或法源有誤）：\n';
+      const url = 'mailto:hk6429@gmail.com?subject=' +
+        encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      window.location.href = url;
     };
   </script>
 </body>
