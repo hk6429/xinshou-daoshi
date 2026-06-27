@@ -4,6 +4,7 @@
 // 里程碑週為手寫 5 拍劇情，把法規織進高張力情境。
 import { EXTRA_QUESTIONS } from './questionBank.js';
 import { EVENT_CARDS, eventToBeat } from './events.js';
+import { MINIGAMES, minigameToBeat } from './minigames.js';
 
 export const MILESTONE_INDICES = [0, 1, 3, 5, 8, 12, 19];
 export const DAYS_PER_WEEK = 5;
@@ -1238,6 +1239,8 @@ const TOTAL_WEEKS = 40;
 // 平時週裡，這些週會在第 N 天前插入一張突發事件卡（穿插劇情、增加回饋感）。
 // 用固定週次保證每局節奏一致：上學期 3 張、下學期 3 張，避開開學前三週。
 const EVENT_CARD_WEEKS = { 4: 2, 9: 3, 13: 1, 18: 2, 24: 3, 31: 1, 37: 2 };
+// 這些週插入一個限時點擊小遊戲（值＝插在第幾天前）；與事件卡週錯開。
+const MINIGAME_WEEKS = { 7: 2, 16: 3, 22: 2, 29: 3, 35: 2 };
 
 // 抽某週的「題目項目」（未轉 beat），依週型別走對應分類；exclude 用來跨週去重。
 function drawWeekItems(weekIndex, runSeed, exclude) {
@@ -1262,12 +1265,15 @@ function buildYearSchedule(runSeed) {
   if (_scheduleCache.has(runSeed)) return _scheduleCache.get(runSeed);
   const usedQ = new Set();
   const usedEv = new Set();
-  const evShuffled = (() => {                       // 事件卡也決定性洗牌、整局不重複
-    const rand = mulberry32((runSeed ^ 0x27d4eb2f) >>> 0);
-    const x = EVENT_CARDS.slice();
+  const usedMg = new Set();
+  const detShuffle = (arr, salt) => {               // 決定性洗牌（事件卡/小遊戲整局不重複用）
+    const rand = mulberry32((runSeed ^ salt) >>> 0);
+    const x = arr.slice();
     for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; }
     return x;
-  })();
+  };
+  const evShuffled = detShuffle(EVENT_CARDS, 0x27d4eb2f);
+  const mgShuffled = detShuffle(MINIGAMES, 0x165667b1);
   const schedule = {};
   for (let w = 0; w < TOTAL_WEEKS; w++) {
     if (MILESTONES[w]) continue;                    // 里程碑為手寫劇情，不抽題
@@ -1278,19 +1284,26 @@ function buildYearSchedule(runSeed) {
       card = evShuffled.find((c) => !usedEv.has(c.id)) || null;
       if (card) usedEv.add(card.id);
     }
-    schedule[w] = { items, cardWeek: EVENT_CARD_WEEKS[w], card };
+    let mg = null;
+    if (MINIGAME_WEEKS[w] != null) {
+      mg = mgShuffled.find((g) => !usedMg.has(g.id)) || null;
+      if (mg) usedMg.add(mg.id);
+    }
+    schedule[w] = { items, cardWeek: EVENT_CARD_WEEKS[w], card, mgWeek: MINIGAME_WEEKS[w], mg };
   }
   _scheduleCache.set(runSeed, schedule);
   return schedule;
 }
 
-// 把當週題目 beats 與（可選的）事件卡 beat 組成 days；事件卡插在第 cardDay 天「之前」。
+// 把當週題目 beats 與（可選的）事件卡／小遊戲 beat 組成 days；穿插在第 N 天「之前」。
 function assembleDays(slot) {
   const beats = slot.items.map(itemToBeat);
-  if (slot.card) {
-    const at = Math.min(Math.max((slot.cardWeek || 1) - 1, 0), beats.length);
-    beats.splice(at, 0, eventToBeat(slot.card));
-  }
+  const insertAt = (n, beat) => {
+    const at = Math.min(Math.max((n || 1) - 1, 0), beats.length);
+    beats.splice(at, 0, beat);
+  };
+  if (slot.card) insertAt(slot.cardWeek, eventToBeat(slot.card));
+  if (slot.mg) insertAt(slot.mgWeek, minigameToBeat(slot.mg));
   return beats;
 }
 

@@ -166,6 +166,19 @@
     background:transparent; color:#9a7b1e; font-weight:600; font-size:12px; border-radius:10px;
     padding:6px 12px;}
   .reportbtn:hover{background:#fff7e6;}
+  .mghud{display:flex; justify-content:space-between; align-items:center; font-weight:800;
+    color:var(--green-d); font-size:14px; padding:2px 4px 4px;}
+  .mgfield{position:relative; width:100%; height:min(240px,34vh); background:#eef5ef;
+    border:2px dashed #bfe0c8; border-radius:14px; overflow:hidden; touch-action:manipulation;}
+  .mgtarget{position:absolute; width:46px; height:46px; display:grid; place-items:center;
+    font-size:29px; cursor:pointer; user-select:none; background:#fff; border-radius:50%;
+    box-shadow:0 2px 7px #0002; animation:mgpop .12s ease-out;}
+  .mgtarget:active{transform:scale(.82);}
+  @keyframes mgpop{from{transform:scale(.4);opacity:.3;}to{transform:scale(1);opacity:1;}}
+  .mgstart{display:block; margin:12px auto 0; border:none; cursor:pointer; background:var(--green);
+    color:#fff; font-weight:800; font-size:15px; border-radius:12px; padding:11px 24px;
+    box-shadow:0 3px 0 var(--green-d);}
+  .mgstart:active{transform:translateY(2px); box-shadow:0 1px 0 var(--green-d);}
   .foot{padding:7px 14px; text-align:center; color:#7c8a7f; font-size:11px;
     background:#fff7e6; border-top:1px dashed #e8d28c; flex:none;}
 
@@ -341,8 +354,8 @@
         state = applyChoice(state, { id: `onEnter_w${state.week}`, effects: week.onEnter, octalysis: [] });
       }
       queue = [...week.days];
-      // 突發事件卡（isEvent）不算「天數」：只有真正的法規題列入 5 天計數
-      scripted = new Set(week.days.filter((d) => !d.isEvent).map((d) => d.id));
+      // 事件卡 / 小遊戲（穿插關卡）不算「天數」：只有真正的法規題列入 5 天計數
+      scripted = new Set(week.days.filter((d) => !d.isEvent && !d.isMinigame).map((d) => d.id));
       dayDone = 0;
       c('sceneimg').src = sceneFor(state.week);
       c('sceneweek').textContent = week.title;
@@ -355,6 +368,7 @@
       if (queue.length === 0) return settle();
       const beat = queue.shift();
       if (beat.sickLeave) return renderSickLeave();
+      if (beat.isMinigame) return renderMinigame(beat);
       const isScripted = scripted.has(beat.id);
       if (isScripted) dayDone += 1;
       curBeat = beat; phase = 'play'; locked = false;
@@ -391,6 +405,72 @@
         `<div style="font-weight:600;margin-top:5px">📊 凝聚 ${SICK_LEAVE.cohesion}　班風 ${SICK_LEAVE.climate}（你不在，班級短暫無人盯）</div>`;
       c('nextbtn').textContent = queue.length ? '回到崗位 →' : '本週結算 ✓';
       c('nextbtn').style.display = 'block';
+      paintHud(before);
+    }
+
+    // ───────── 輕量小遊戲（限時點擊關卡）─────────
+    let mgTimers = [];
+    const STAT_LABEL = Object.fromEntries(STAT_META.concat([['hp', '心力'], ['budget', '班費']]));
+    function clearMg() { mgTimers.forEach((t) => { clearTimeout(t); clearInterval(t); }); mgTimers = []; }
+
+    function renderMinigame(beat) {
+      clearMg();
+      phase = 'play'; locked = true; curBeat = beat;
+      c('badge').textContent = `第${state.week + 1}週 ・ 🎯 小遊戲`;
+      c('who').textContent = beat.title || '小遊戲';
+      c('q').textContent = beat.intro || beat.prompt || '';
+      c('verdict').className = 'verdict'; c('verdict').textContent = '';
+      c('nextbtn').style.display = 'none';
+      c('opts').innerHTML = `<button class="mgstart" id="mgstart">▶ 開始（${beat.durationSec} 秒）</button>`;
+      paintHud();
+      c('mgstart').onclick = () => runMinigame(beat);
+    }
+
+    function runMinigame(beat) {
+      let hits = 0, spawned = 0, left = beat.durationSec;
+      c('opts').innerHTML =
+        `<div class="mghud"><span>⏱ <b id="mgtime">${left}</b> 秒</span>` +
+        `<span>✓ ${beat.verb} <b id="mgscore">0</b></span></div>` +
+        `<div class="mgfield" id="mgfield"></div>`;
+      const field = c('mgfield');
+      const spawn = () => {
+        const t = document.createElement('div');
+        t.className = 'mgtarget'; t.textContent = beat.emoji;
+        const w = Math.max(0, field.clientWidth - 50), h = Math.max(0, field.clientHeight - 50);
+        t.style.left = Math.floor(Math.random() * w) + 'px';
+        t.style.top = Math.floor(Math.random() * h) + 'px';
+        spawned += 1;
+        const life = setTimeout(() => { if (t.parentNode) t.remove(); }, beat.lifeMs);
+        mgTimers.push(life);
+        const grab = (e) => { e.preventDefault(); hits += 1; c('mgscore').textContent = hits; clearTimeout(life); t.remove(); };
+        t.addEventListener('click', grab);
+        field.appendChild(t);
+      };
+      spawn();
+      mgTimers.push(setInterval(spawn, beat.spawnMs));
+      mgTimers.push(setInterval(() => {
+        left -= 1;
+        const el = c('mgtime'); if (el) el.textContent = Math.max(0, left);
+        if (left <= 0) endMinigame(beat, hits, spawned);
+      }, 1000));
+    }
+
+    function endMinigame(beat, hits, spawned) {
+      clearMg();
+      const before = structuredClone(state);
+      const ratio = spawned ? hits / spawned : 0;
+      const scale = 0.4 + 0.6 * Math.min(1, ratio);   // 保底 0.4，永遠正獎勵
+      const effects = {};
+      for (const k in beat.reward) effects[k] = Math.max(1, Math.round(beat.reward[k] * scale));
+      state = applyChoice(state, { id: beat.id, effects, octalysis: [2, 3] });
+      const summary = Object.entries(effects).map(([k, v]) => `${STAT_LABEL[k] || k} +${v}`).join('　');
+      c('opts').innerHTML = '';
+      c('verdict').className = 'verdict best';
+      c('verdict').innerHTML = `<div>🎯 你${beat.verb}了 ${hits} 件！</div>` +
+        `<div style="font-weight:600;margin-top:5px">獎勵：${summary}</div>`;
+      c('nextbtn').textContent = queue.length ? '繼續 →' : '本週結算 ✓';
+      c('nextbtn').style.display = 'block';
+      phase = 'play';
       paintHud(before);
     }
 
