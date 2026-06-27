@@ -341,7 +341,8 @@
         state = applyChoice(state, { id: `onEnter_w${state.week}`, effects: week.onEnter, octalysis: [] });
       }
       queue = [...week.days];
-      scripted = new Set(week.days.map((d) => d.id));
+      // 突發事件卡（isEvent）不算「天數」：只有真正的法規題列入 5 天計數
+      scripted = new Set(week.days.filter((d) => !d.isEvent).map((d) => d.id));
       dayDone = 0;
       c('sceneimg').src = sceneFor(state.week);
       c('sceneweek').textContent = week.title;
@@ -357,10 +358,12 @@
       const isScripted = scripted.has(beat.id);
       if (isScripted) dayDone += 1;
       curBeat = beat; phase = 'play'; locked = false;
-      const total = week.days.length;
-      c('badge').textContent = `第${state.week + 1}週 ・ ${isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況'}`;
+      const total = scripted.size || week.days.length;
+      const tag = beat.isEvent ? '🎲 突發事件' : (isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況');
+      c('badge').textContent = `第${state.week + 1}週 ・ ${tag}`;
       dots().forEach((d, k) => d.classList.toggle('on', k < dayDone - (isScripted ? 1 : 0)));
-      c('who').textContent = beat.law ? beat.law.replace(/[（）()]/g, '') || '情境判讀' : '情境判讀';
+      c('who').textContent = beat.isEvent ? (beat.title || '突發事件')
+        : (beat.law ? beat.law.replace(/[（）()]/g, '') || '情境判讀' : '情境判讀');
       c('q').textContent = beat.prompt;
       c('verdict').className = 'verdict'; c('verdict').textContent = '';
       c('nextbtn').style.display = 'none';
@@ -395,6 +398,18 @@
       if (locked) return; locked = true;
       const beforeChoice = structuredClone(state);
       state = applyChoice(state, ch);
+      // 突發事件卡：無對錯、不計素養/連對，只顯示這個選擇帶來的結果與數值起伏
+      if (curBeat.isEvent) {
+        [...c('opts').children].forEach((x) => { if (x !== o) x.classList.add('dim'); });
+        o.classList.add('sel-good');
+        if (needsSickLeave(state)) queue.unshift({ id: `sick_${state.week}_${dayDone}`, sickLeave: true });
+        c('verdict').className = 'verdict good';
+        c('verdict').innerHTML = `<div>🎲 ${esc(ch.outcome || '')}</div>`;
+        c('nextbtn').textContent = queue.length ? '繼續 →' : '本週結算 ✓';
+        c('nextbtn').style.display = 'block';
+        paintHud(beforeChoice);
+        return;
+      }
       // 連對：最佳解 +1，其餘答對歸零（CD8 損失閃避 + CD2 成就）
       let streakBroke = false;
       if (ch.tier === 'best') { streak += 1; if (streak > bestStreak) bestStreak = streak; }
