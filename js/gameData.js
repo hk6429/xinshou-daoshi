@@ -2,6 +2,7 @@
 // 設計：每週 5 天挑戰，每天一張 4 選項情境卡（1 正解＋3 誘答），正解嚴格綁法源。
 // 平時週每天從「法規題庫池」依難度帶＋種子抽題（每輪不同＝八角 C7 未知）。
 // 里程碑週為手寫 5 拍劇情，把法規織進高張力情境。
+import { EXTRA_QUESTIONS } from './questionBank.js';
 
 export const MILESTONE_INDICES = [0, 1, 3, 5, 8, 12, 19];
 export const DAYS_PER_WEEK = 5;
@@ -690,6 +691,9 @@ export const LEGAL_POOL = [
       { label: '乾脆取消班親會，省得麻煩', tier: 'wrong', effects: { trust: -3, honor: -2 }, octalysis: [] },
     ],
   },
+
+  // ── 405 題主題情境擴充（運動會/段考/競賽/語文/管教/通報/親師/經營/輔導）──
+  ...EXTRA_QUESTIONS,
 ];
 
 // ───────────────────────────── 抽題（種子隨機）─────────────────────────────
@@ -708,13 +712,20 @@ function difficultyBand(weekIndex) {
   return [2, 3];
 }
 
+// 平時週只抽「全年候」題：把季節性題（段考/競賽/運動會/校慶/班競/語文競賽）
+// 排除在外，這些只在各自排程週出現＝題目跟著導師作息，不會亂入。
+const YEARROUND_CATS = ['管教', '通報', '親師', '輔導', '經營', '聘任', '考核', '救濟', '學生', '霸凌'];
+// 開學情境題（含這些字樣）只在開學前三週出現，之後不再抽到。
+const OPENING_RE = /開學|第一週|開學前|始業|新接|剛接|新生報到/;
+
 // 依 (runSeed, weekIndex) 決定性抽 count 題：同存檔穩定、新局換種子＝每輪不同
 export function pickDailyQuestions(weekIndex, runSeed = 1, count = DAYS_PER_WEEK) {
   const seed = (runSeed ^ ((weekIndex + 1) * 0x9e3779b1)) >>> 0;
   const rand = mulberry32(seed);
   const band = difficultyBand(weekIndex);
-  let pool = LEGAL_POOL.filter((q) => band.includes(q.diff));
-  if (pool.length < count) pool = LEGAL_POOL.slice();
+  let pool = LEGAL_POOL.filter((q) => YEARROUND_CATS.includes(q.cat) && band.includes(q.diff));
+  if (weekIndex > 2) pool = pool.filter((q) => !OPENING_RE.test(q.scenario)); // 開學題鎖前三週
+  if (pool.length < count) pool = LEGAL_POOL.filter((q) => YEARROUND_CATS.includes(q.cat));
   const arr = pool.slice();
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
@@ -1139,13 +1150,104 @@ const MILESTONES = {
 
 // ───────────────────────────── 對外組裝 ─────────────────────────────
 // 解析某週的 5 天內容：里程碑回手寫劇情；平時週依種子抽題
+// ───────────────────────────── 學期 / 週次 / 特殊週 ─────────────────────────────
+// 上學期＝第1–20週（index 0–19）；下學期＝第21–40週（index 20–39）
+// 段考週（學習模式）：第 7/14/20/27/34/40 週；校慶＋運動會週：第 10 週
+export const EXAM_WEEKS = [6, 13, 19, 26, 33, 39];
+export const EVENT_WEEKS = [9];
+const EXAM_THEME_WEEKS = [6, 13, 26, 33, 39]; // 第20週(index19)已是手寫期末里程碑，內容沿用
+const EXAM_CATS = ['段考'];
+const EVENT_CATS = ['運動會', '校慶', '班級競賽'];
+
+// 校內活動／競賽時間序（依導師作息，0-indexed；避開里程碑/段考/校慶週）
+// tag＝右上徽章；cats＝抽題分類；match＝在分類內再以關鍵字精選（不足才放寬）
+const ACTIVITY_WEEKS = {
+  4:  { tag: '科展構思', title: '科展構思週', cats: ['競賽'], match: /科展|科學展/,
+        intro: '科展構思啟動。引導孩子找題目、組隊、規劃進度。' },
+  7:  { tag: '奧林匹亞', title: '奧林匹亞校內賽', cats: ['競賽'], match: /奧林匹亞|趣味科學|科學競賽/,
+        intro: '段考後，奧林匹亞趣味科學校內初決賽，選出班級代表隊。' },
+  14: { tag: '資訊競賽', title: '資訊類科競賽週', cats: ['競賽'], match: /資訊|程式|電腦|科技/,
+        intro: '資訊類科競賽起跑，鼓勵有興趣的孩子報名參賽。' },
+  15: { tag: '奧林匹亞', title: '全市奧林匹亞', cats: ['競賽'], match: /奧林匹亞|趣味科學/,
+        intro: '全市奧林匹亞趣味競賽，帶代表隊出征，平衡訓練與課業。' },
+  16: { tag: '數學競試', title: '縣市數學競試', cats: ['競賽'], match: /數學/,
+        intro: '縣市端數學競試，陪選手做最後衝刺與心理建設。' },
+  23: { tag: '國語文', title: '國語文校內賽', cats: ['語文競賽'],
+        intro: '下學期國語文競賽校內賽開跑：作文、字音字形、演講、朗讀。' },
+  24: { tag: '科展決選', title: '科展決選/生科', cats: ['競賽'], match: /科展|生活科技|生科/,
+        intro: '科展校內決選預賽，加上生活科技類科競賽。' },
+  25: { tag: '袋鼠盃', title: '袋鼠盃數學賽', cats: ['競賽'], match: /袋鼠|數學/,
+        intro: '袋鼠盃數學競賽週，營造正向的數學挑戰氛圍。' },
+  27: { tag: '國語文', title: '國語文決賽', cats: ['語文競賽'],
+        intro: '國語文競賽分階段決賽，陪選手最後磨稿、正音。' },
+  36: { tag: '英文活動', title: '英文科活動週', cats: ['語文競賽'], match: /英文|英語|spelling|speech/i,
+        intro: '英文科活動週：演說、Spelling Bee、英文班級競賽。' },
+  37: { tag: '社會活動', title: '社會科活動週', cats: ['競賽', '語文競賽'], match: /百萬中學堂|社會/,
+        intro: '社會科活動週：百萬中學堂等班級知識競賽。' },
+};
+
+export function weekMeta(index) {
+  const term = index < 20 ? '上學期' : '下學期';
+  let kind = 'daily', badge = '';
+  if (MILESTONES[index]) { kind = 'milestone'; badge = '里程碑'; }
+  if (ACTIVITY_WEEKS[index] && !MILESTONES[index]) { kind = 'activity'; badge = ACTIVITY_WEEKS[index].tag; }
+  if (EVENT_WEEKS.includes(index)) { kind = 'event'; badge = '校慶運動會'; }
+  if (EXAM_WEEKS.includes(index)) { kind = 'exam'; badge = '段考'; }
+  return { index, term, weekNo: index + 1, kind, badge,
+    label: `${term}・第${index + 1}週` };
+}
+
+// 依分類(＋可選關鍵字)＋種子抽 count 題：題目精準對應該週活動
+function pickByCategory(weekIndex, runSeed, cats, count = DAYS_PER_WEEK, matchRe = null) {
+  const seed = (runSeed ^ ((weekIndex + 1) * 0x85ebca6b)) >>> 0;
+  const rand = mulberry32(seed);
+  let pool = LEGAL_POOL.filter((q) => cats.includes(q.cat) &&
+    (!matchRe || matchRe.test(q.scenario + q.law)));
+  if (pool.length < count) pool = LEGAL_POOL.filter((q) => cats.includes(q.cat)); // 放寬：去掉關鍵字
+  if (pool.length < count) pool = LEGAL_POOL.slice();
+  const arr = pool.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.slice(0, count);
+}
+
 export function resolveWeek(weekIndex, runSeed = 1) {
+  const meta = weekMeta(weekIndex);
   const m = MILESTONES[weekIndex];
-  if (m) return m;
+  if (m) return { ...m, meta, title: m.title.replace(/^W\d+\s*/, '') };
+  if (EXAM_THEME_WEEKS.includes(weekIndex)) {
+    return {
+      index: weekIndex, type: 'exam', meta,
+      title: `第${weekIndex + 1}週 段考週`,
+      intro: '段考逼近，進入「學習模式」。這五天的選擇，決定全班能不能靜下心、穩住節奏。',
+      onEnter: {},
+      days: pickByCategory(weekIndex, runSeed, EXAM_CATS).map(itemToBeat),
+    };
+  }
+  if (EVENT_WEEKS.includes(weekIndex)) {
+    return {
+      index: weekIndex, type: 'event', meta,
+      title: `第${weekIndex + 1}週 校慶運動會`,
+      intro: '校慶與運動會週！選手選拔、創意進場、班級榮譽全擠在一起，帶全班一起拚一波。',
+      onEnter: {},
+      days: pickByCategory(weekIndex, runSeed, EVENT_CATS).map(itemToBeat),
+    };
+  }
+  const act = ACTIVITY_WEEKS[weekIndex];
+  if (act) {
+    return {
+      index: weekIndex, type: 'activity', meta,
+      title: `第${weekIndex + 1}週 ${act.title}`,
+      intro: act.intro,
+      onEnter: {},
+      days: pickByCategory(weekIndex, runSeed, act.cats, DAYS_PER_WEEK, act.match).map(itemToBeat),
+    };
+  }
   return {
-    index: weekIndex,
-    type: 'daily',
-    title: `W${weekIndex} 導師現場`,
+    index: weekIndex, type: 'daily', meta,
+    title: `第${weekIndex + 1}週 導師現場`,
     intro: '本週的五天導師現場，每天一道情境，見招拆招。',
     onEnter: {},
     days: pickDailyQuestions(weekIndex, runSeed).map(itemToBeat),
@@ -1153,6 +1255,13 @@ export function resolveWeek(weekIndex, runSeed = 1) {
 }
 
 // 地圖與型別判斷用的骨架（不含當週題目，題目由 resolveWeek 解析）
-export const WEEKS = Array.from({ length: 40 }, (_, i) =>
-  MILESTONES[i] ?? { index: i, type: 'daily', title: `W${i} 導師現場` }
-);
+export const WEEKS = Array.from({ length: 40 }, (_, i) => {
+  const meta = weekMeta(i);
+  const m = MILESTONES[i];
+  if (m) return { ...m, meta, title: m.title.replace(/^W\d+\s*/, '') };
+  const title = meta.kind === 'exam' ? `第${i + 1}週 段考週`
+    : meta.kind === 'event' ? `第${i + 1}週 校慶運動會`
+    : meta.kind === 'activity' ? `第${i + 1}週 ${ACTIVITY_WEEKS[i].title}`
+    : `第${i + 1}週 導師現場`;
+  return { index: i, type: meta.kind, title, meta };
+});

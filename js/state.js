@@ -30,7 +30,7 @@ export function literacyRank(literacy) {
 // 損失一律全額（CD8）。讓里程碑週不再一週把一條線從 50 灌到 100。
 // 0–60 全額、60–80 六折、80–100 三折。小增益在低值仍全額、超大增益仍可填到 100。
 export function addStat(current, delta) {
-  if (delta <= 0) return clamp(current + delta, 0, 100);
+  if (delta <= 0) return clamp(Math.round(current + delta), 0, 100);
   let v = current, remaining = delta;
   for (const [cap, eff] of [[60, 1], [80, 0.6], [100, 0.3]]) {
     if (v >= cap) continue;
@@ -38,7 +38,8 @@ export function addStat(current, delta) {
     if (remaining <= cost) { v += remaining * eff; remaining = 0; break; }
     v = cap; remaining -= cost;
   }
-  return clamp(v, 0, 100);
+  // 一律收成整數（自然數呈現）：避免結算畫面出現 11.7999999 之類浮點
+  return clamp(Math.round(v), 0, 100);
 }
 
 export function applyEffects(state, effects = {}) {

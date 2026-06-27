@@ -55,6 +55,8 @@ export function checkHiddenCombo(state, milestone) {
 // 班級經營的熵：每週五維自然滑落，不持續經營就退步（CD8 損失 + CD2 維持壓力）。
 // 地板 30，避免死亡螺旋到 0；想跌破 30 仍可透過實際失分選項達成（保留待努力結局）。
 const WEEKLY_DECAY = 2;
+const WEEKLY_HP_REGEN = 8;   // 週末/假期休息回血，避免心力一觸 0 就永久卡死
+const HP_CAP = 100;
 const STAT_KEYS = ['cohesion', 'climate', 'trust', 'honor', 'roleModel'];
 
 export function advanceWeek(state) {
@@ -63,6 +65,8 @@ export function advanceWeek(state) {
   for (const k of STAT_KEYS) {
     next.stats[k] = Math.max(30, next.stats[k] - WEEKLY_DECAY);
   }
+  // 週末休息：心力回復（上限 HP_CAP），讓「心力 0」是可恢復的低潮而非死局
+  next.resources.hp = Math.min(HP_CAP, next.resources.hp + WEEKLY_HP_REGEN);
   if (next.week === 10 && next.flags.delayedPenaltyW10) {
     next = applyEffects(next, { trust: -10 });
     next.flags.delayedPenaltyW10 = false;

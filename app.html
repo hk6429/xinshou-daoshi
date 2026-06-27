@@ -290,9 +290,9 @@
     const STAT_META = [['cohesion','凝聚'],['climate','班風'],['trust','信任'],['honor','榮譽'],['roleModel','身教']];
     function paintStats(prev) {
       c('stats5').innerHTML = STAT_META.map(([k, name]) => {
-        const v = state.stats[k];
+        const v = Math.round(state.stats[k]);
         const cls = v >= 75 ? 'hi' : v <= 35 ? 'low' : '';
-        const d = prev ? v - prev.stats[k] : 0;
+        const d = prev ? v - Math.round(prev.stats[k]) : 0;
         const dtxt = d ? `<span class="d ${d > 0 ? 'up' : 'dn'}">${d > 0 ? '+' : ''}${d}</span>` : '';
         return `<div class="s ${cls}"><div class="k">${name}</div>` +
           `<div class="v">${v}${dtxt}</div><div class="bar"><i style="width:${v}%"></i></div></div>`;
@@ -331,7 +331,8 @@
       dayDone = 0;
       c('sceneimg').src = sceneFor(state.week);
       c('sceneweek').textContent = week.title;
-      c('scenetag').textContent = `🏫 ${GENDER === 'f' ? '女' : '男'}老師`;
+      const wm = week.meta || {};
+      c('scenetag').textContent = `🏫 ${GENDER === 'f' ? '女' : '男'}老師　${wm.label || ''}${wm.badge ? '・' + wm.badge : ''}`;
       nextBeat();
     }
 
@@ -342,7 +343,7 @@
       if (isScripted) dayDone += 1;
       curBeat = beat; phase = 'play'; locked = false;
       const total = week.days.length;
-      c('badge').textContent = `W${state.week} ・ ${isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況'}`;
+      c('badge').textContent = `第${state.week + 1}週 ・ ${isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況'}`;
       dots().forEach((d, k) => d.classList.toggle('on', k < dayDone - (isScripted ? 1 : 0)));
       c('who').textContent = beat.law ? beat.law.replace(/[（）()]/g, '') || '情境判讀' : '情境判讀';
       c('q').textContent = beat.prompt;
@@ -403,7 +404,7 @@
       c('opts').innerHTML = '';
       const badgeLine = newBadges.length ? `<div style="margin-top:5px">🎖 獲得勳章：${newBadges.map(esc).join('、')}</div>` : '';
       const statDelta = STAT_META.map(([k, name]) => {
-        const d = state.stats[k] - weekStart.stats[k];
+        const d = Math.round(state.stats[k]) - Math.round(weekStart.stats[k]);
         return d ? `${name}${d > 0 ? '+' : ''}${d}` : null;
       }).filter(Boolean).join('　') || '五維持平';
       const trend = selectEnding(state);
