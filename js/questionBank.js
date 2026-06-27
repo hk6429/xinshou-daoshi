@@ -1,5 +1,4 @@
-// 自動產生：9 批主題情境題（運動會/段考/競賽/語文/管教/通報/親師/經營/輔導）
-// 由子代理生成、build_qbank 驗證後合併。請勿手改流水號。
+// 自動產生：主題情境題（含競賽 sub 子類）。請勿手改流水號。
 export const EXTRA_QUESTIONS = [
   {
     "id": "sp_001",
@@ -6216,7 +6215,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_002",
@@ -6284,7 +6284,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_003",
@@ -6352,7 +6353,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "奧林匹亞"
   },
   {
     "id": "ac_004",
@@ -6420,7 +6422,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_005",
@@ -6488,7 +6491,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_006",
@@ -6556,7 +6560,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "社會"
   },
   {
     "id": "ac_007",
@@ -6624,7 +6629,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "其他"
   },
   {
     "id": "ac_008",
@@ -6692,7 +6698,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_009",
@@ -6760,7 +6767,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_010",
@@ -6828,7 +6836,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "其他"
   },
   {
     "id": "ac_011",
@@ -6896,7 +6905,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "奧林匹亞"
   },
   {
     "id": "ac_012",
@@ -6964,7 +6974,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_013",
@@ -7032,7 +7043,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_014",
@@ -7100,7 +7112,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_015",
@@ -7168,7 +7181,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_016",
@@ -7236,7 +7250,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "奧林匹亞"
   },
   {
     "id": "ac_017",
@@ -7304,7 +7319,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "社會"
   },
   {
     "id": "ac_018",
@@ -7372,7 +7388,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_019",
@@ -7440,7 +7457,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "其他"
   },
   {
     "id": "ac_020",
@@ -7508,7 +7526,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_021",
@@ -7576,7 +7595,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_022",
@@ -7644,7 +7664,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_023",
@@ -7712,7 +7733,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "奧林匹亞"
   },
   {
     "id": "ac_024",
@@ -7780,7 +7802,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_025",
@@ -7848,7 +7871,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_026",
@@ -7916,7 +7940,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_027",
@@ -7984,7 +8009,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "奧林匹亞"
   },
   {
     "id": "ac_028",
@@ -8052,7 +8078,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "社會"
   },
   {
     "id": "ac_029",
@@ -8120,7 +8147,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_030",
@@ -8188,7 +8216,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "其他"
   },
   {
     "id": "ac_031",
@@ -8256,7 +8285,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_032",
@@ -8324,7 +8354,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_033",
@@ -8392,7 +8423,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "奧林匹亞"
   },
   {
     "id": "ac_034",
@@ -8460,7 +8492,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_035",
@@ -8528,7 +8561,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_036",
@@ -8596,7 +8630,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_037",
@@ -8664,7 +8699,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_038",
@@ -8732,7 +8768,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "社會"
   },
   {
     "id": "ac_039",
@@ -8800,7 +8837,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "數學"
   },
   {
     "id": "ac_040",
@@ -8868,7 +8906,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_041",
@@ -8936,7 +8975,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "其他"
   },
   {
     "id": "ac_042",
@@ -9004,7 +9044,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_043",
@@ -9072,7 +9113,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "科展"
   },
   {
     "id": "ac_044",
@@ -9140,7 +9182,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "奧林匹亞"
   },
   {
     "id": "ac_045",
@@ -9208,7 +9251,8 @@ export const EXTRA_QUESTIONS = [
         },
         "octalysis": []
       }
-    ]
+    ],
+    "sub": "其他"
   },
   {
     "id": "ln_001",
@@ -27385,6 +27429,1674 @@ export const EXTRA_QUESTIONS = [
           "cohesion": -3
         },
         "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_001",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 1,
+    "scenario": "資訊科競賽要選一名選手，兩個學生都很想去，你身為導師該怎麼決定？",
+    "law": "（學藝競賽輔導）",
+    "explain": "公開透明的選拔標準最能服眾，也讓落選的孩子知道輸在哪、下次怎麼努力。",
+    "choices": [
+      {
+        "label": "公開選拔標準，讓兩人各展實力再決定",
+        "tier": "best",
+        "effects": {
+          "trust": 6,
+          "climate": 4,
+          "roleModel": 3,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "私下問科任老師意見後直接指定人選",
+        "tier": "good",
+        "effects": {
+          "trust": 2,
+          "honor": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "有專業參考但程序不夠公開，學生易覺得黑箱。"
+      },
+      {
+        "label": "用月考成績高低當唯一標準逕自刷一人",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "競賽能力與學科成績無關，這樣判定並不公平。"
+      },
+      {
+        "label": "兩個都報名讓他們自己去場外比輸贏",
+        "tier": "wrong",
+        "effects": {
+          "climate": -4,
+          "cohesion": -3
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "誰先來找我報名就讓誰代表班上出賽",
+        "tier": "wrong",
+        "effects": {
+          "trust": -4,
+          "climate": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_002",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 1,
+    "scenario": "班上孩子報名 Scratch 程式競賽，自信滿滿卻卡關到想放棄，你怎麼陪他？",
+    "law": "（班級經營原則）",
+    "explain": "把大目標拆成小步驟、肯定每一次微進步，比直接給答案更能養出他的耐挫力。",
+    "choices": [
+      {
+        "label": "陪他把難題拆成小步驟，逐關肯定進度",
+        "tier": "best",
+        "effects": {
+          "trust": 6,
+          "climate": 4,
+          "roleModel": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "找已得獎的學長來分享卡關突破的經驗",
+        "tier": "good",
+        "effects": {
+          "honor": 2,
+          "roleModel": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "同儕榜樣有激勵力，但仍需導師後續陪伴跟進。"
+      },
+      {
+        "label": "直接幫他把程式寫完，先求作品交得出去",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "honor": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "代寫剝奪學習也違反競賽誠信，不可取。"
+      },
+      {
+        "label": "叫他別想太多，反正得不得獎都沒差",
+        "tier": "wrong",
+        "effects": {
+          "climate": -4,
+          "trust": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "要他回家自己想通，想不通就退賽算了",
+        "tier": "wrong",
+        "effects": {
+          "climate": -4,
+          "cohesion": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_003",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 2,
+    "scenario": "機器人競賽選手訓練要佔用每天午休與部分課堂，家長擔心影響功課，你怎麼拿捏？",
+    "law": "（學藝競賽輔導）",
+    "explain": "和家長談清楚訓練時數與補課配套，讓孩子兼顧課業與興趣，才能走得長久。",
+    "choices": [
+      {
+        "label": "和家長約定訓練時數，並安排課業補強配套",
+        "tier": "best",
+        "effects": {
+          "trust": 6,
+          "climate": 3,
+          "roleModel": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          5
+        ]
+      },
+      {
+        "label": "先讓孩子試訓兩週，再依狀況調整時間安排",
+        "tier": "good",
+        "effects": {
+          "trust": 2,
+          "climate": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "務實漸進但需明訂檢核點，否則容易拖延失控。"
+      },
+      {
+        "label": "不管家長想法，要孩子全力備賽其餘擺一邊",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "climate": -3
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "漠視家長與課業會破壞親師信任，得不償失。"
+      },
+      {
+        "label": "覺得太麻煩，乾脆勸孩子別參加這次比賽",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "honor": -3
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "讓孩子自己想辦法蹺課練習都不必跟我說",
+        "tier": "wrong",
+        "effects": {
+          "trust": -5,
+          "climate": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_004",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 2,
+    "scenario": "資訊課分組做專題，一組裡有人全包、有人完全擺爛，你發現後怎麼處理？",
+    "law": "（班級經營原則）",
+    "explain": "明確分工加上個人責任區，再公開協作貢獻，能避免有人搭便車、有人被榨乾。",
+    "choices": [
+      {
+        "label": "重新明定分工與責任區，並追蹤每人進度",
+        "tier": "best",
+        "effects": {
+          "cohesion": 6,
+          "trust": 4,
+          "climate": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "私下找擺爛的孩子聊，了解他卡住的原因",
+        "tier": "good",
+        "effects": {
+          "trust": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "關懷動機很對，但仍需搭配分工調整才治本。"
+      },
+      {
+        "label": "整組連坐扣分，讓認真的人替擺爛者受罰",
+        "tier": "illegal",
+        "effects": {
+          "climate": -5,
+          "cohesion": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "連坐懲罰打擊認真的孩子，公平性蕩然無存。"
+      },
+      {
+        "label": "睜一隻眼閉一隻眼，反正作品交得出來就好",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "trust": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "當眾點名罵擺爛的孩子要他自己看著辦",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "trust": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_005",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 2,
+    "scenario": "校內簡報製作競賽，你班孩子作品很用心卻在台上緊張到忘詞，賽後沮喪不已，你怎麼接？",
+    "law": "（班級經營原則）",
+    "explain": "先接住情緒、肯定他準備的努力，再一起復盤上台技巧，把挫折轉成下次的養分。",
+    "choices": [
+      {
+        "label": "先肯定他的努力，再陪他復盤上台的技巧",
+        "tier": "best",
+        "effects": {
+          "climate": 5,
+          "trust": 5,
+          "roleModel": 3,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "找口條好的同學分享克服上台緊張的撇步",
+        "tier": "good",
+        "effects": {
+          "roleModel": 2,
+          "climate": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "同儕示範很實用，但別忘了先安撫他的情緒。"
+      },
+      {
+        "label": "當著全班檢討他忘詞，要大家引以為戒",
+        "tier": "illegal",
+        "effects": {
+          "climate": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "公開檢討等於二次傷害，會澆熄孩子的勇氣。"
+      },
+      {
+        "label": "跟他說緊張很正常，下次自然就好別放心上",
+        "tier": "wrong",
+        "effects": {
+          "climate": -2,
+          "trust": -2
+        },
+        "octalysis": []
+      },
+      {
+        "label": "要他別難過了，反正只是一場小比賽而已",
+        "tier": "wrong",
+        "effects": {
+          "climate": -3,
+          "trust": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_006",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 2,
+    "scenario": "中文打字輸入比賽，平時最快的孩子賽前一直要求加練，影響到他的睡眠與精神，你怎麼勸？",
+    "law": "（學藝競賽輔導）",
+    "explain": "幫他訂合理練習量與休息界線，讓他懂得適度比硬練更能穩定發揮，這也是重要一課。",
+    "choices": [
+      {
+        "label": "幫他訂練量與休息界線，穩定比硬練重要",
+        "tier": "best",
+        "effects": {
+          "trust": 5,
+          "climate": 4,
+          "roleModel": 3,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          5
+        ]
+      },
+      {
+        "label": "請他寫每日練習紀錄，一起檢視疲勞成效",
+        "tier": "good",
+        "effects": {
+          "trust": 2,
+          "climate": 2
+        },
+        "octalysis": [
+          3
+        ],
+        "note": "量化追蹤很好，但要避免反而增加他的壓力感。"
+      },
+      {
+        "label": "鼓勵他熬夜衝刺，反正賽後就能好好補眠",
+        "tier": "illegal",
+        "effects": {
+          "climate": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "犧牲健康換成績是錯誤示範，導師不該帶頭。"
+      },
+      {
+        "label": "放著不管，他想練多久是他自己的事情",
+        "tier": "wrong",
+        "effects": {
+          "trust": -3,
+          "climate": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "乾脆禁止他再練，怕出事直接叫他退賽",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "honor": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_007",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 3,
+    "scenario": "網路素養課上，你發現班上孩子私下用 AI 工具代寫資訊作業還互相分享，你怎麼處理？",
+    "law": "（班級經營原則）",
+    "explain": "把握機會教 AI 使用的界線與誠信，重新設計能驗證歷程的任務，比單純禁止更有效。",
+    "choices": [
+      {
+        "label": "藉機談AI使用界線，改設能驗歷程的任務",
+        "tier": "best",
+        "effects": {
+          "trust": 5,
+          "climate": 4,
+          "roleModel": 4,
+          "hp": -4
+        },
+        "octalysis": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "label": "請孩子當眾示範AI怎麼用才算輔助非代寫",
+        "tier": "good",
+        "effects": {
+          "roleModel": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "示範教學有價值，但要顧及被點名孩子的感受。"
+      },
+      {
+        "label": "把涉及的孩子全部記過，殺雞儆猴絕後患",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "重罰未教界線只會逼孩子轉入地下，治標不治本。"
+      },
+      {
+        "label": "假裝沒看到，反正現在大家也都這樣用",
+        "tier": "wrong",
+        "effects": {
+          "trust": -4,
+          "honor": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "全面禁用AI，誰再碰就直接整組打零分",
+        "tier": "wrong",
+        "effects": {
+          "climate": -4,
+          "cohesion": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_008",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 3,
+    "scenario": "資安競賽選手在團隊訓練中態度強勢，常否定隊友想法導致氣氛緊繃，你怎麼引導？",
+    "law": "（學藝競賽輔導）",
+    "explain": "肯定他的能力，同時帶他練習傾聽與尊重隊友，讓技術強的孩子也成為團隊的助力。",
+    "choices": [
+      {
+        "label": "肯定他的能力，帶他練習傾聽尊重隊友",
+        "tier": "best",
+        "effects": {
+          "cohesion": 6,
+          "trust": 4,
+          "roleModel": 4,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "安排他當隊長，用責任感督促他學會帶人",
+        "tier": "good",
+        "effects": {
+          "cohesion": 3,
+          "roleModel": 2
+        },
+        "octalysis": [
+          4
+        ],
+        "note": "賦權促成長很妙，但要先確認他願意調整態度。"
+      },
+      {
+        "label": "覺得他能力強就好，叫其他隊友多配合他",
+        "tier": "illegal",
+        "effects": {
+          "cohesion": -5,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "縱容強勢會犧牲團隊，也養壞孩子的人際態度。"
+      },
+      {
+        "label": "當眾數落他太自我，要他收斂否則換人",
+        "tier": "wrong",
+        "effects": {
+          "climate": -4,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "把他調離團隊，讓他自己單打獨鬥去比賽",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "honor": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_009",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 2,
+    "scenario": "創客 maker 競賽報名截止前，孩子的作品因零件壞掉幾乎要做不完，他急得快哭出來，你怎麼陪？",
+    "law": "（班級經營原則）",
+    "explain": "先穩住他的情緒，再陪他盤點現有資源、找替代方案，過程中的應變力才是真正的收穫。",
+    "choices": [
+      {
+        "label": "先穩住他情緒，再陪他盤點資源找替代方案",
+        "tier": "best",
+        "effects": {
+          "climate": 5,
+          "trust": 5,
+          "roleModel": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          3,
+          6
+        ]
+      },
+      {
+        "label": "幫他聯絡其他老師看能否借到備用零件救急",
+        "tier": "good",
+        "effects": {
+          "trust": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "動用人脈很實際，但別讓孩子失去自己解題機會。"
+      },
+      {
+        "label": "索性自己動手把作品改好，先求趕上報名",
+        "tier": "illegal",
+        "effects": {
+          "honor": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "代做違反競賽精神，也剝奪孩子的應變學習。"
+      },
+      {
+        "label": "跟他說做不完就算了，明年再參加也沒關係",
+        "tier": "wrong",
+        "effects": {
+          "climate": -3,
+          "honor": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "怪他平常不檢查器材，現在出事只能自己扛",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_010",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 2,
+    "scenario": "影片製作競賽，你班兩組都想用同一個拍攝主題，互不相讓開始鬧脾氣，你怎麼協調？",
+    "law": "（班級經營原則）",
+    "explain": "引導兩組各自說明構想差異，協助找出區隔或合作的可能，把衝突變成創意激盪的契機。",
+    "choices": [
+      {
+        "label": "引導兩組說明構想差異，找出區隔或合作",
+        "tier": "best",
+        "effects": {
+          "cohesion": 6,
+          "climate": 4,
+          "trust": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          3,
+          5,
+          7
+        ]
+      },
+      {
+        "label": "用抽籤決定主題歸屬，另一組改做延伸題",
+        "tier": "good",
+        "effects": {
+          "climate": 2,
+          "cohesion": 2
+        },
+        "octalysis": [
+          4
+        ],
+        "note": "抽籤求快又公平，但少了引導溝通的成長機會。"
+      },
+      {
+        "label": "偏袒平時表現好的那組，把主題判給他們",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "cohesion": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "偏心裁決會撕裂班級信任，公平性徹底崩盤。"
+      },
+      {
+        "label": "叫兩組都別吵了，主題我幫你們各指定一個",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -3,
+          "climate": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "誰再吵就兩組都取消參賽，眼不見為淨省事",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "honor": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_011",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 3,
+    "scenario": "資訊競賽放榜，你班孩子苦練半年仍落選，回到教室一臉失落不發一語，你第一時間怎麼接？",
+    "law": "（學藝競賽輔導）",
+    "explain": "先讓他知道你看見了他的努力與成長，落選不等於失敗，這份韌性會長成他未來的底氣。",
+    "choices": [
+      {
+        "label": "先讓他知道我看見努力，落選不等於白費",
+        "tier": "best",
+        "effects": {
+          "climate": 5,
+          "trust": 5,
+          "roleModel": 4,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          5,
+          1
+        ]
+      },
+      {
+        "label": "陪他回顧這半年累積的進步與學到的本事",
+        "tier": "good",
+        "effects": {
+          "roleModel": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          3
+        ],
+        "note": "聚焦成長很對，但要等他情緒平復後再慢慢談。"
+      },
+      {
+        "label": "跟他說是評審看走眼，這次根本就是黑箱",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "roleModel": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "甩鍋給評審會教歪心態，無助孩子面對挫折。"
+      },
+      {
+        "label": "叫他別灰心啦，下次再加油就一定有機會",
+        "tier": "wrong",
+        "effects": {
+          "climate": -2,
+          "trust": -2
+        },
+        "octalysis": []
+      },
+      {
+        "label": "跟他說早知道實力不夠，當初就別報名了",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_012",
+    "cat": "競賽",
+    "sub": "資訊",
+    "diff": 2,
+    "scenario": "數位作品集成果發表，你班孩子的點子被別班同學公開嘲笑，他當場僵住，你怎麼當下處理？",
+    "law": "（班級經營原則）",
+    "explain": "立即適度為孩子撐場、肯定他的創意，事後再私下安撫，讓他知道嘗試本身就值得被尊重。",
+    "choices": [
+      {
+        "label": "當下適度替他撐場肯定創意，事後再安撫",
+        "tier": "best",
+        "effects": {
+          "climate": 5,
+          "trust": 5,
+          "roleModel": 3,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          5,
+          1
+        ]
+      },
+      {
+        "label": "引導全場討論這個點子的優點，化解尷尬",
+        "tier": "good",
+        "effects": {
+          "climate": 3,
+          "roleModel": 2
+        },
+        "octalysis": [
+          3
+        ],
+        "note": "翻轉氣氛很高明，但要留意別讓他更聚焦壓力。"
+      },
+      {
+        "label": "跟著打圓場說別人也對，叫他別太玻璃心",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "附和嘲笑等於背叛孩子，信任會瞬間崩塌。"
+      },
+      {
+        "label": "假裝沒聽到嘲笑，繼續往下進行發表流程",
+        "tier": "wrong",
+        "effects": {
+          "climate": -3,
+          "trust": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "事後才跟他說別人講話本來就比較直白嘛",
+        "tier": "wrong",
+        "effects": {
+          "climate": -3,
+          "trust": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_013",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 1,
+    "scenario": "生活科技競賽要選一位選手代表班上，兩個孩子手藝都不錯，你身為導師怎麼選？",
+    "law": "（學藝競賽輔導）",
+    "explain": "用公開的實作評比標準來選，過程透明、結果可被說明，落選的孩子才會心服口服。",
+    "choices": [
+      {
+        "label": "用公開實作評比標準選，過程透明可說明",
+        "tier": "best",
+        "effects": {
+          "trust": 6,
+          "climate": 4,
+          "roleModel": 3,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "請生科老師依平時作品水準提供推薦排序",
+        "tier": "good",
+        "effects": {
+          "trust": 2,
+          "honor": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "有專業背書，但仍應讓孩子知道評比的依據為何。"
+      },
+      {
+        "label": "看誰跟我熟、平常乖巧就讓誰代表出賽",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "以親疏遠近選人破壞公平，孩子會看在眼裡寒心。"
+      },
+      {
+        "label": "乾脆兩個都不選，省得得罪另外一個孩子",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "honor": -3
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "叫兩人猜拳決定，輸的就摸摸鼻子認了吧",
+        "tier": "wrong",
+        "effects": {
+          "trust": -4,
+          "climate": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_014",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "生科課動手做木工作品，有孩子嫌麻煩想草草交差，影響全組進度，你怎麼帶？",
+    "law": "（班級經營原則）",
+    "explain": "帶他看見作品從粗胚到成形的成就感，把工序拆小、給予即時肯定，動機往往就回來了。",
+    "choices": [
+      {
+        "label": "帶他看見作品成形的成就，工序拆小肯定",
+        "tier": "best",
+        "effects": {
+          "cohesion": 5,
+          "climate": 4,
+          "roleModel": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "讓他先負責一個他最有興趣的小部件試做",
+        "tier": "good",
+        "effects": {
+          "climate": 3,
+          "cohesion": 2
+        },
+        "octalysis": [
+          4
+        ],
+        "note": "從興趣切入很聰明，但要留意別讓他只挑輕鬆活。"
+      },
+      {
+        "label": "罵他偷懶丟全組臉，要他重做否則整組扣分",
+        "tier": "illegal",
+        "effects": {
+          "climate": -5,
+          "cohesion": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "羞辱加連坐只會引發反彈，也傷了認真同學的心。"
+      },
+      {
+        "label": "隨他去，反正交得出半成品有分數就行了",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "climate": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "乾脆把他的部分接手做完，免得拖累全組",
+        "tier": "wrong",
+        "effects": {
+          "trust": -4,
+          "cohesion": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_015",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "生科教室裡有孩子操作電鋸時沒戴護目鏡又嘻笑打鬧，你看到的當下該怎麼處置？",
+    "law": "（班級經營原則）",
+    "explain": "安全沒有妥協空間，立即停下動作、要求落實防護，再講清楚危險，這是不可退讓的底線。",
+    "choices": [
+      {
+        "label": "立即喊停要求戴好護具，再講清楚危險",
+        "tier": "best",
+        "effects": {
+          "climate": 4,
+          "trust": 5,
+          "roleModel": 4,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          6,
+          8
+        ]
+      },
+      {
+        "label": "先讓他暫停改在旁觀摩，等收心了再上機",
+        "tier": "good",
+        "effects": {
+          "climate": 2,
+          "trust": 2
+        },
+        "octalysis": [
+          6
+        ],
+        "note": "暫停觀摩夠謹慎，但仍要當場把安全規範說明白。"
+      },
+      {
+        "label": "覺得只是小事，叫他小心點就讓他繼續做",
+        "tier": "illegal",
+        "effects": {
+          "trust": -6,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "輕忽工安等於拿孩子的安全冒險，絕不可放行。"
+      },
+      {
+        "label": "當眾大聲羞辱他笨手笨腳，嚇得全班安靜",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "trust": -3
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "沒收他的工具叫他罰站，整堂課不准再碰",
+        "tier": "wrong",
+        "effects": {
+          "climate": -3,
+          "trust": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_016",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "動力機械競賽訓練要佔用孩子放學後時間，家長擔心耽誤補習與課業，你怎麼溝通？",
+    "law": "（學藝競賽輔導）",
+    "explain": "和家長攤開訓練排程與課業配套，找出彼此都能接受的平衡點，孩子才不會兩頭為難。",
+    "choices": [
+      {
+        "label": "和家長攤開訓練排程與課業配套找平衡點",
+        "tier": "best",
+        "effects": {
+          "trust": 6,
+          "climate": 3,
+          "roleModel": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          5
+        ]
+      },
+      {
+        "label": "先排一個月試訓期，再依狀況微調時間",
+        "tier": "good",
+        "effects": {
+          "trust": 2,
+          "climate": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "漸進試行很穩，但要訂好檢核點避免無限延期。"
+      },
+      {
+        "label": "不顧家長疑慮，硬要孩子天天留下加練到晚",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "climate": -3
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "無視家庭考量會破壞親師信任，也累壞孩子。"
+      },
+      {
+        "label": "覺得溝通太累，直接勸孩子放棄這次比賽",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "honor": -3
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "叫孩子自己跟爸媽喬，喬不定就不關我的事",
+        "tier": "wrong",
+        "effects": {
+          "trust": -5,
+          "climate": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_017",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "生科專題分組製作機構作品，有一組分工嚴重不均，動手的累翻、出嘴的納涼，你怎麼介入？",
+    "law": "（班級經營原則）",
+    "explain": "重新攤開工序、為每人劃定責任區並追蹤產出，讓貢獻被看見，搭便車的空間自然消失。",
+    "choices": [
+      {
+        "label": "重新攤開工序劃責任區，並追蹤實際產出",
+        "tier": "best",
+        "effects": {
+          "cohesion": 6,
+          "trust": 4,
+          "climate": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "私下找納涼的孩子聊，了解他做不來或不想",
+        "tier": "good",
+        "effects": {
+          "trust": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "先懂原因很重要，但仍得搭配分工調整才解得了。"
+      },
+      {
+        "label": "整組一起扣分連坐，讓認真的人替偷懶扛責",
+        "tier": "illegal",
+        "effects": {
+          "climate": -5,
+          "cohesion": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "連坐讓努力的孩子受冤，公平與士氣同時崩盤。"
+      },
+      {
+        "label": "假裝沒看見，反正作品做出來能交差就好",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "trust": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "當著全組面點名罵納涼的，要他自己看著辦",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "trust": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_018",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 3,
+    "scenario": "創意設計競賽評分，你班作品落後別班，孩子質疑評審偏心、情緒激動快要失控，你怎麼引導？",
+    "law": "（學藝競賽輔導）",
+    "explain": "先同理他的不甘，再帶他用評分標準客觀比對作品差距，把怒氣轉成下次精進的具體方向。",
+    "choices": [
+      {
+        "label": "先同理他的不甘，再帶他用評分標準比差距",
+        "tier": "best",
+        "effects": {
+          "trust": 5,
+          "climate": 4,
+          "roleModel": 4,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "陪他把得獎作品一起拆解，看別人贏在哪",
+        "tier": "good",
+        "effects": {
+          "roleModel": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          3
+        ],
+        "note": "拆解學習很實在，但要等他情緒緩和再進行才好。"
+      },
+      {
+        "label": "附和他說評審偏心，這比賽根本不值得認真",
+        "tier": "illegal",
+        "effects": {
+          "roleModel": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "煽動受害心態會教歪價值觀，無助孩子面對結果。"
+      },
+      {
+        "label": "叫他別計較了，比賽輸贏本來就是家常便飯",
+        "tier": "wrong",
+        "effects": {
+          "climate": -3,
+          "trust": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "反過來怪他作品做得不夠好還想怪評審",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_019",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "賽前一週孩子為了趕工機構作品，天天熬夜又翹掉其他課，精神渙散，你怎麼處理？",
+    "law": "（學藝競賽輔導）",
+    "explain": "幫他重排趕工進度、守住睡眠與正課底線，讓他懂得規劃比硬撐更專業，也更走得遠。",
+    "choices": [
+      {
+        "label": "幫他重排趕工進度，守住睡眠與正課底線",
+        "tier": "best",
+        "effects": {
+          "trust": 5,
+          "climate": 4,
+          "roleModel": 3,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          5
+        ]
+      },
+      {
+        "label": "請他列剩餘工序清單，一起估時砍掉多餘的",
+        "tier": "good",
+        "effects": {
+          "trust": 2,
+          "climate": 2
+        },
+        "octalysis": [
+          3
+        ],
+        "note": "盤點工序很實用，但要避免反而加重他的焦慮感。"
+      },
+      {
+        "label": "默許他翹課熬夜衝刺，反正賽後再補回來",
+        "tier": "illegal",
+        "effects": {
+          "climate": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "縱容犧牲健康與正課，是錯誤示範也害了孩子。"
+      },
+      {
+        "label": "放著不管，他要怎麼趕工是他自己的選擇",
+        "tier": "wrong",
+        "effects": {
+          "trust": -3,
+          "climate": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "直接叫他別比了，怕他累壞乾脆退賽省事",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -4,
+          "honor": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_020",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 3,
+    "scenario": "生科課孩子操作器材時不慎割傷手，雖然不深但他嚇到發抖，全班也慌了，你怎麼處置？",
+    "law": "（班級經營原則）",
+    "explain": "先冷靜止血送處理、安撫孩子與全班情緒，事後再帶大家復盤安全程序，把意外變成教材。",
+    "choices": [
+      {
+        "label": "先冷靜止血送處理安撫他，事後再復盤安全",
+        "tier": "best",
+        "effects": {
+          "trust": 6,
+          "climate": 4,
+          "roleModel": 4,
+          "hp": -4
+        },
+        "octalysis": [
+          2,
+          6,
+          8
+        ]
+      },
+      {
+        "label": "立刻請鄰班老師顧班，自己專心陪他去保健",
+        "tier": "good",
+        "effects": {
+          "trust": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          6
+        ],
+        "note": "陪傷者很對，但別忘了同步穩住全班的慌亂情緒。"
+      },
+      {
+        "label": "先怪他不專心才會受傷，要他下次小心點",
+        "tier": "illegal",
+        "effects": {
+          "trust": -6,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "先究責不救助會加深恐懼，也違背照護的本分。"
+      },
+      {
+        "label": "覺得傷得不深，叫他自己貼OK繃繼續上課",
+        "tier": "wrong",
+        "effects": {
+          "trust": -5,
+          "climate": -4
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "當場慌了手腳跟著大叫，讓全班更加恐慌",
+        "tier": "wrong",
+        "effects": {
+          "climate": -4,
+          "trust": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_021",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "團隊製作競賽作品時，孩子們對木作結構設計各有堅持，吵到快翻臉拆夥，你怎麼協調？",
+    "law": "（班級經營原則）",
+    "explain": "引導他們各自說明設計理由，用作品實測或試做來檢驗優劣，把爭執導向理性的共識。",
+    "choices": [
+      {
+        "label": "引導各自說明設計理由，用試做實測檢驗",
+        "tier": "best",
+        "effects": {
+          "cohesion": 6,
+          "climate": 4,
+          "trust": 3,
+          "hp": -4
+        },
+        "octalysis": [
+          3,
+          5,
+          7
+        ]
+      },
+      {
+        "label": "先讓大家暫停冷靜，約下節課帶草圖再談",
+        "tier": "good",
+        "effects": {
+          "climate": 3,
+          "cohesion": 2
+        },
+        "octalysis": [
+          4
+        ],
+        "note": "緩衝降溫很合理，但別讓爭議就這樣不了了之。"
+      },
+      {
+        "label": "直接拍板採用手藝最好那個孩子的設計",
+        "tier": "illegal",
+        "effects": {
+          "cohesion": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "獨斷壓過討論會讓其他孩子心寒，團隊向心力崩。"
+      },
+      {
+        "label": "叫他們別吵了，設計就照課本範例做省事",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -3,
+          "climate": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "誰再吵就把整組拆掉各做各的，省得吵鬧",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "honor": -3
+        },
+        "octalysis": [
+          8
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cs_022",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "生科競賽得獎，孩子想獨佔光環，但作品其實是全組合力完成的，你怎麼引導他歸屬榮譽？",
+    "law": "（學藝競賽輔導）",
+    "explain": "帶他看見每個夥伴的貢獻，公開把功勞歸給團隊，讓他學會分享榮耀，這比獎狀更珍貴。",
+    "choices": [
+      {
+        "label": "帶他看見夥伴貢獻，公開把功勞歸給團隊",
+        "tier": "best",
+        "effects": {
+          "cohesion": 6,
+          "honor": 4,
+          "roleModel": 4,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          5,
+          4
+        ]
+      },
+      {
+        "label": "請每位組員分享自己負責部分，讓貢獻現形",
+        "tier": "good",
+        "effects": {
+          "cohesion": 3,
+          "honor": 2
+        },
+        "octalysis": [
+          5
+        ],
+        "note": "讓貢獻現形很好，但仍要點出分享榮耀的重要性。"
+      },
+      {
+        "label": "順著他讓他獨佔光環，反正得獎大家好看",
+        "tier": "illegal",
+        "effects": {
+          "cohesion": -5,
+          "honor": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "縱容獨佔會寒了組員的心，也養壞孩子的價值觀。"
+      },
+      {
+        "label": "當眾糾正他太自私，要他把獎狀分給別人",
+        "tier": "wrong",
+        "effects": {
+          "climate": -4,
+          "trust": -3
+        },
+        "octalysis": [
+          8
+        ]
+      },
+      {
+        "label": "覺得這沒什麼好計較，誰拿榮譽都無所謂啦",
+        "tier": "wrong",
+        "effects": {
+          "cohesion": -3,
+          "honor": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_023",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 1,
+    "scenario": "生科課孩子很想多花時間打磨競賽作品，卻擔心會排擠到主科複習時間，跑來問你怎麼辦？",
+    "law": "（學藝競賽輔導）",
+    "explain": "陪他一起排出兼顧作品與課業的時間表，讓他學會取捨與規劃，這份能力一輩子受用。",
+    "choices": [
+      {
+        "label": "陪他排兼顧作品與課業的時間表，學會取捨",
+        "tier": "best",
+        "effects": {
+          "trust": 5,
+          "climate": 4,
+          "roleModel": 3,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "label": "請他先列兩邊待辦，再一起判斷輕重緩急",
+        "tier": "good",
+        "effects": {
+          "trust": 2,
+          "climate": 2
+        },
+        "octalysis": [
+          3
+        ],
+        "note": "盤點待辦很實用，但要陪他落實，否則只是空談。"
+      },
+      {
+        "label": "叫他別管課業，作品做到最好得獎更重要",
+        "tier": "illegal",
+        "effects": {
+          "trust": -5,
+          "climate": -3
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "誘導偏廢課業是錯誤引導，會害孩子顧此失彼。"
+      },
+      {
+        "label": "跟他說作品隨便做做，主科顧好成績才真",
+        "tier": "wrong",
+        "effects": {
+          "climate": -3,
+          "honor": -3
+        },
+        "octalysis": []
+      },
+      {
+        "label": "叫他自己想辦法分配，時間都是他自己的",
+        "tier": "wrong",
+        "effects": {
+          "trust": -3,
+          "climate": -3
+        },
+        "octalysis": []
+      }
+    ]
+  },
+  {
+    "id": "cs_024",
+    "cat": "競賽",
+    "sub": "生活科技",
+    "diff": 2,
+    "scenario": "生活科技競賽放榜落選，孩子覺得自己手藝差、再也不想碰工具了，整個人提不起勁，你怎麼接？",
+    "law": "（學藝競賽輔導）",
+    "explain": "肯定他這段時間磨出的真本事，帶他看見落選只是一站、不是終點，把熱情重新點回來。",
+    "choices": [
+      {
+        "label": "肯定他磨出的真本事，落選只是一站而已",
+        "tier": "best",
+        "effects": {
+          "climate": 5,
+          "trust": 5,
+          "roleModel": 4,
+          "hp": -3
+        },
+        "octalysis": [
+          2,
+          5,
+          1
+        ]
+      },
+      {
+        "label": "陪他回顧作品從無到有的歷程，找進步亮點",
+        "tier": "good",
+        "effects": {
+          "roleModel": 3,
+          "climate": 2
+        },
+        "octalysis": [
+          3
+        ],
+        "note": "聚焦成長很對，但要等他情緒平復後再慢慢談。"
+      },
+      {
+        "label": "跟他說手藝是天生的，沒天分就別硬碰了",
+        "tier": "illegal",
+        "effects": {
+          "roleModel": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ],
+        "note": "貼天分標籤會澆熄孩子，也徹底否定後天努力。"
+      },
+      {
+        "label": "叫他別氣餒啦，下次再報名一定會更好的",
+        "tier": "wrong",
+        "effects": {
+          "climate": -2,
+          "trust": -2
+        },
+        "octalysis": []
+      },
+      {
+        "label": "跟他說早看出他不是這塊料，別參加就好",
+        "tier": "wrong",
+        "effects": {
+          "climate": -5,
+          "trust": -4
+        },
+        "octalysis": [
+          8
+        ]
       }
     ]
   }

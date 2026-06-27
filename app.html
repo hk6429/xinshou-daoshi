@@ -244,7 +244,7 @@
   <script type="module">
     import { createInitialState, saveState, literacyRank } from './js/state.js';
     import { resolveWeek } from './js/gameData.js';
-    import { applyChoice, evalBranch, checkHiddenCombo, advanceWeek, gradeChoice, LITERACY_BY_TIER } from './js/engine.js';
+    import { applyChoice, evalBranch, checkHiddenCombo, advanceWeek, gradeChoice, LITERACY_BY_TIER, needsSickLeave, SICK_LEAVE } from './js/engine.js';
     import { selectEnding } from './js/endings.js';
 
     const c = (id) => document.getElementById(id);
@@ -339,6 +339,7 @@
     function nextBeat() {
       if (queue.length === 0) return settle();
       const beat = queue.shift();
+      if (beat.sickLeave) return renderSickLeave();
       const isScripted = scripted.has(beat.id);
       if (isScripted) dayDone += 1;
       curBeat = beat; phase = 'play'; locked = false;
@@ -360,6 +361,22 @@
       paintHud();
     }
 
+    function renderSickLeave() {
+      const before = structuredClone(state);
+      state = applyChoice(state, { id: 'sick_leave', effects: SICK_LEAVE, octalysis: [] });
+      phase = 'play'; locked = true;
+      c('badge').textContent = `第${state.week + 1}週 ・ ⚠ 身心調適假`;
+      c('who').textContent = '身心調適假';
+      c('q').textContent = '你撐不住了——心力見底。先請一天身心調適假，好好休息，明天再回到孩子身邊。';
+      c('opts').innerHTML = '';
+      c('verdict').className = 'verdict good';
+      c('verdict').innerHTML = `<div>💆 心力 +${SICK_LEAVE.hp}（回到崗位）</div>` +
+        `<div style="font-weight:600;margin-top:5px">📊 凝聚 ${SICK_LEAVE.cohesion}　班風 ${SICK_LEAVE.climate}（你不在，班級短暫無人盯）</div>`;
+      c('nextbtn').textContent = queue.length ? '回到崗位 →' : '本週結算 ✓';
+      c('nextbtn').style.display = 'block';
+      paintHud(before);
+    }
+
     function choose(o, ch) {
       if (locked) return; locked = true;
       const beforeChoice = structuredClone(state);
@@ -370,6 +387,8 @@
       else if (ch.tier) { if (streak >= 2) streakBroke = true; streak = 0; }
       const branch = evalBranch(state, curBeat);
       if (branch) queue.unshift(branch);
+      // 心力歸零 → 下一個畫面插入「身心調適假」事件（回血、班級短暫鬆散）
+      if (needsSickLeave(state)) queue.unshift({ id: `sick_${state.week}_${dayDone}`, sickLeave: true });
       const tc = tierClass(ch.tier);
       [...c('opts').children].forEach((x) => { if (x !== o) x.classList.add('dim'); });
       o.classList.add('sel-' + tc);

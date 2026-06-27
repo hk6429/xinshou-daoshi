@@ -1160,29 +1160,30 @@ const EXAM_CATS = ['段考'];
 const EVENT_CATS = ['運動會', '校慶', '班級競賽'];
 
 // 校內活動／競賽時間序（依導師作息，0-indexed；避開里程碑/段考/校慶週）
-// tag＝右上徽章；cats＝抽題分類；match＝在分類內再以關鍵字精選（不足才放寬）
+// tag＝右上徽章；cats＝抽題分類；subs＝競賽子類精選（科展/奧林匹亞/數學/資訊/生活科技/社會）；
+// match＝在分類內再以關鍵字精選。子類/關鍵字不足時自動放寬到整個 cats。
 const ACTIVITY_WEEKS = {
-  4:  { tag: '科展構思', title: '科展構思週', cats: ['競賽'], match: /科展|科學展/,
+  4:  { tag: '科展構思', title: '科展構思週', cats: ['競賽'], subs: ['科展'],
         intro: '科展構思啟動。引導孩子找題目、組隊、規劃進度。' },
-  7:  { tag: '奧林匹亞', title: '奧林匹亞校內賽', cats: ['競賽'], match: /奧林匹亞|趣味科學|科學競賽/,
+  7:  { tag: '奧林匹亞', title: '奧林匹亞校內賽', cats: ['競賽'], subs: ['奧林匹亞'],
         intro: '段考後，奧林匹亞趣味科學校內初決賽，選出班級代表隊。' },
-  14: { tag: '資訊競賽', title: '資訊類科競賽週', cats: ['競賽'], match: /資訊|程式|電腦|科技/,
+  14: { tag: '資訊競賽', title: '資訊類科競賽週', cats: ['競賽'], subs: ['資訊'],
         intro: '資訊類科競賽起跑，鼓勵有興趣的孩子報名參賽。' },
-  15: { tag: '奧林匹亞', title: '全市奧林匹亞', cats: ['競賽'], match: /奧林匹亞|趣味科學/,
+  15: { tag: '奧林匹亞', title: '全市奧林匹亞', cats: ['競賽'], subs: ['奧林匹亞'],
         intro: '全市奧林匹亞趣味競賽，帶代表隊出征，平衡訓練與課業。' },
-  16: { tag: '數學競試', title: '縣市數學競試', cats: ['競賽'], match: /數學/,
+  16: { tag: '數學競試', title: '縣市數學競試', cats: ['競賽'], subs: ['數學'],
         intro: '縣市端數學競試，陪選手做最後衝刺與心理建設。' },
   23: { tag: '國語文', title: '國語文校內賽', cats: ['語文競賽'],
         intro: '下學期國語文競賽校內賽開跑：作文、字音字形、演講、朗讀。' },
-  24: { tag: '科展決選', title: '科展決選/生科', cats: ['競賽'], match: /科展|生活科技|生科/,
+  24: { tag: '生活科技', title: '科展決選/生科', cats: ['競賽'], subs: ['科展', '生活科技'],
         intro: '科展校內決選預賽，加上生活科技類科競賽。' },
-  25: { tag: '袋鼠盃', title: '袋鼠盃數學賽', cats: ['競賽'], match: /袋鼠|數學/,
+  25: { tag: '袋鼠盃', title: '袋鼠盃數學賽', cats: ['競賽'], subs: ['數學'],
         intro: '袋鼠盃數學競賽週，營造正向的數學挑戰氛圍。' },
   27: { tag: '國語文', title: '國語文決賽', cats: ['語文競賽'],
         intro: '國語文競賽分階段決賽，陪選手最後磨稿、正音。' },
   36: { tag: '英文活動', title: '英文科活動週', cats: ['語文競賽'], match: /英文|英語|spelling|speech/i,
         intro: '英文科活動週：演說、Spelling Bee、英文班級競賽。' },
-  37: { tag: '社會活動', title: '社會科活動週', cats: ['競賽', '語文競賽'], match: /百萬中學堂|社會/,
+  37: { tag: '社會活動', title: '社會科活動週', cats: ['競賽'], subs: ['社會'],
         intro: '社會科活動週：百萬中學堂等班級知識競賽。' },
 };
 
@@ -1197,19 +1198,29 @@ export function weekMeta(index) {
     label: `${term}・第${index + 1}週` };
 }
 
-// 依分類(＋可選關鍵字)＋種子抽 count 題：題目精準對應該週活動
-function pickByCategory(weekIndex, runSeed, cats, count = DAYS_PER_WEEK, matchRe = null) {
+// 依分類(＋可選子類/關鍵字)＋種子抽 count 題：子類優先，不足才依序補同分類、再補全池
+function pickByCategory(weekIndex, runSeed, cats, count = DAYS_PER_WEEK, opts = {}) {
+  const { subs = null, matchRe = null } = opts;
   const seed = (runSeed ^ ((weekIndex + 1) * 0x85ebca6b)) >>> 0;
   const rand = mulberry32(seed);
-  let pool = LEGAL_POOL.filter((q) => cats.includes(q.cat) &&
-    (!matchRe || matchRe.test(q.scenario + q.law)));
-  if (pool.length < count) pool = LEGAL_POOL.filter((q) => cats.includes(q.cat)); // 放寬：去掉關鍵字
-  if (pool.length < count) pool = LEGAL_POOL.slice();
-  const arr = pool.slice();
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
+  const shuffle = (a) => {
+    const x = a.slice();
+    for (let i = x.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [x[i], x[j]] = [x[j], x[i]];
+    }
+    return x;
+  };
+  const inCat = LEGAL_POOL.filter((q) => cats.includes(q.cat));
+  const primary = inCat.filter((q) =>
+    (!subs || subs.includes(q.sub)) && (!matchRe || matchRe.test(q.scenario + q.law)));
+  let arr = shuffle(primary);
+  const fill = (src) => {
+    const seen = new Set(arr.map((q) => q.id));
+    arr = arr.concat(shuffle(src.filter((q) => !seen.has(q.id))));
+  };
+  if (arr.length < count) fill(inCat);          // 補同分類（去子類限制）
+  if (arr.length < count) fill(LEGAL_POOL);      // 仍不足才補全池
   return arr.slice(0, count);
 }
 
@@ -1242,7 +1253,8 @@ export function resolveWeek(weekIndex, runSeed = 1) {
       title: `第${weekIndex + 1}週 ${act.title}`,
       intro: act.intro,
       onEnter: {},
-      days: pickByCategory(weekIndex, runSeed, act.cats, DAYS_PER_WEEK, act.match).map(itemToBeat),
+      days: pickByCategory(weekIndex, runSeed, act.cats, DAYS_PER_WEEK,
+        { subs: act.subs, matchRe: act.match }).map(itemToBeat),
     };
   }
   return {

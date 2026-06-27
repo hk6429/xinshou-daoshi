@@ -4,21 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>新手導師養成記</title>
-  <meta http-equiv="refresh" content="0; url=app.html" />
   <link rel="canonical" href="app.html" />
   <style>
-    html,body{height:100%;margin:0;background:#cdd8cf;
+    html,body{height:100%;margin:0;background:#000;overflow:hidden;
       font-family:"PingFang TC","Noto Sans TC",sans-serif;}
-    .b{height:100%;display:flex;flex-direction:column;align-items:center;
-      justify-content:center;gap:14px;color:#23463a;}
-    a{color:#1f7d52;font-weight:800;}
+    #intro{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;background:#000;}
+    .skip{position:fixed;right:18px;bottom:18px;z-index:10;
+      color:#fff;background:#0006;border:1px solid #ffffff66;border-radius:20px;
+      padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;
+      backdrop-filter:blur(4px);text-decoration:none;}
+    .skip:hover{background:#0009;}
+    .tap{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10;
+      color:#fff;background:#0006;border:1px solid #ffffff44;border-radius:20px;
+      padding:6px 14px;font-size:12px;cursor:pointer;backdrop-filter:blur(4px);}
   </style>
 </head>
 <body>
-  <div class="b">
-    <div style="font-size:20px;font-weight:900;">新手導師養成記</div>
-    <div>載入中…若沒有自動進入，請點 <a href="app.html">這裡開始遊戲</a></div>
-  </div>
-  <script>location.replace('app.html');</script>
+  <video id="intro" autoplay muted playsinline preload="auto">
+    <source src="assets/intro.mp4" type="video/mp4" />
+  </video>
+  <div class="tap" id="tap">🔊 點一下開聲音</div>
+  <a class="skip" id="skip">跳過 ›</a>
+  <script>
+    const go = () => location.replace('app.html');
+    const v = document.getElementById('intro');
+    // 影片跑完 → 跳回遊戲首頁
+    v.addEventListener('ended', go);
+    // 載入失敗 / 無法播放 → 直接進遊戲，別卡住
+    v.addEventListener('error', go);
+    // 保險：超過影片長度仍未觸發 ended（+2 秒緩衝）就跳
+    v.addEventListener('loadedmetadata', () => {
+      setTimeout(go, (v.duration + 2) * 1000);
+    });
+    // 點一下開聲音（從頭重播，符合瀏覽器手勢解鎖規則）
+    document.getElementById('tap').addEventListener('click', (e) => {
+      e.currentTarget.style.display = 'none';
+      v.muted = false; v.currentTime = 0; v.play();
+    });
+    // 手動跳過
+    document.getElementById('skip').addEventListener('click', (e) => { e.preventDefault(); go(); });
+  </script>
 </body>
 </html>

@@ -57,6 +57,10 @@ export function checkHiddenCombo(state, milestone) {
 const WEEKLY_DECAY = 2;
 const WEEKLY_HP_REGEN = 8;   // 週末/假期休息回血，避免心力一觸 0 就永久卡死
 const HP_CAP = 100;
+
+// 心力歸零＝身心調適假：回一批心力，但班級短暫無人盯＝凝聚/班風小幅下滑
+export const SICK_LEAVE = { hp: 25, cohesion: -5, climate: -5 };
+export function needsSickLeave(state) { return state.resources.hp <= 0; }
 const STAT_KEYS = ['cohesion', 'climate', 'trust', 'honor', 'roleModel'];
 
 export function advanceWeek(state) {
