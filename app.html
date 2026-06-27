@@ -174,7 +174,24 @@
     font-size:29px; cursor:pointer; user-select:none; background:#fff; border-radius:50%;
     box-shadow:0 2px 7px #0002; animation:mgpop .12s ease-out;}
   .mgtarget:active{transform:scale(.82);}
+  .mgtarget.bad{background:#ffe3e3;}
   @keyframes mgpop{from{transform:scale(.4);opacity:.3;}to{transform:scale(1);opacity:1;}}
+  /* 收作業：依序點的座號方塊 */
+  .mgtile{position:absolute; width:48px; height:48px; display:grid; place-items:center;
+    font-size:22px; font-weight:800; color:var(--green-d); cursor:pointer; user-select:none;
+    background:#fff; border:2px solid #bfe0c8; border-radius:12px; box-shadow:0 2px 7px #0002;}
+  .mgtile.done{background:var(--green); color:#fff; border-color:var(--green-d); opacity:.85;}
+  .mgtile.miss{background:#ffd9d9; border-color:#e88;}
+  /* 加油打氣：時機條 */
+  .mgbar{position:absolute; left:6%; right:6%; top:50%; transform:translateY(-50%); height:36px;
+    background:#dceee1; border-radius:10px; overflow:hidden;}
+  .mgzone{position:absolute; top:0; bottom:0; background:#9be7b4;
+    border-left:2px solid var(--green-d); border-right:2px solid var(--green-d);}
+  .mgmarker{position:absolute; top:-7px; bottom:-7px; width:5px; background:var(--green-d);
+    border-radius:3px; box-shadow:0 0 6px #1b7a3e88;}
+  .mgtaphint{position:absolute; bottom:8px; width:100%; text-align:center;
+    font-size:12px; color:#5a8a6b; pointer-events:none;}
+  .mgfield.flash{background:#d6f3df;}
   .mgstart{display:block; margin:12px auto 0; border:none; cursor:pointer; background:var(--green);
     color:#fff; font-weight:800; font-size:15px; border-radius:12px; padding:11px 24px;
     box-shadow:0 3px 0 var(--green-d);}
@@ -426,13 +443,37 @@
       c('mgstart').onclick = () => runMinigame(beat);
     }
 
+    // 每種小遊戲玩法不同，但都靠 mgScaffold 起一個「時間＋分數」HUD 與場地，結束時呼叫 endMinigame。
     function runMinigame(beat) {
-      let hits = 0, spawned = 0, left = beat.durationSec;
+      const kind = beat.kind || 'whack';
+      if (kind === 'avoid') return mgAvoid(beat);
+      if (kind === 'order') return mgOrder(beat);
+      if (kind === 'timing') return mgTiming(beat);
+      if (kind === 'catch') return mgCatch(beat);
+      return mgWhack(beat);
+    }
+
+    function mgScaffold(beat, label) {
+      let left = beat.durationSec;
       c('opts').innerHTML =
         `<div class="mghud"><span>⏱ <b id="mgtime">${left}</b> 秒</span>` +
-        `<span>✓ ${beat.verb} <b id="mgscore">0</b></span></div>` +
+        `<span>${label} <b id="mgscore">0</b></span></div>` +
         `<div class="mgfield" id="mgfield"></div>`;
-      const field = c('mgfield');
+      return {
+        field: c('mgfield'),
+        setScore: (v) => { const e = c('mgscore'); if (e) e.textContent = v; },
+        onEnd: (cb) => mgTimers.push(setInterval(() => {
+          left -= 1;
+          const e = c('mgtime'); if (e) e.textContent = Math.max(0, left);
+          if (left <= 0) cb();
+        }, 1000)),
+      };
+    }
+
+    // whack：目標冒出，全部點掉
+    function mgWhack(beat) {
+      let hits = 0, spawned = 0;
+      const s = mgScaffold(beat, `✓ ${beat.verb}`), field = s.field;
       const spawn = () => {
         const t = document.createElement('div');
         t.className = 'mgtarget'; t.textContent = beat.emoji;
@@ -442,31 +483,133 @@
         spawned += 1;
         const life = setTimeout(() => { if (t.parentNode) t.remove(); }, beat.lifeMs);
         mgTimers.push(life);
-        const grab = (e) => { e.preventDefault(); hits += 1; c('mgscore').textContent = hits; clearTimeout(life); t.remove(); };
-        t.addEventListener('click', grab);
+        t.addEventListener('click', (e) => { e.preventDefault(); hits += 1; s.setScore(hits); clearTimeout(life); t.remove(); });
         field.appendChild(t);
       };
       spawn();
       mgTimers.push(setInterval(spawn, beat.spawnMs));
-      mgTimers.push(setInterval(() => {
-        left -= 1;
-        const el = c('mgtime'); if (el) el.textContent = Math.max(0, left);
-        if (left <= 0) endMinigame(beat, hits, spawned);
-      }, 1000));
+      s.onEnd(() => endMinigame(beat, hits, spawned));
     }
 
-    function endMinigame(beat, hits, spawned) {
+    // avoid：只點急件，點到 badEmoji 扣件數
+    function mgAvoid(beat) {
+      let score = 0, good = 0;
+      const s = mgScaffold(beat, `✓ ${beat.verb}`), field = s.field;
+      const spawn = () => {
+        const bad = Math.random() < 0.34;
+        const t = document.createElement('div');
+        t.className = 'mgtarget' + (bad ? ' bad' : '');
+        t.textContent = bad ? beat.badEmoji : beat.emoji;
+        const w = Math.max(0, field.clientWidth - 50), h = Math.max(0, field.clientHeight - 50);
+        t.style.left = Math.floor(Math.random() * w) + 'px';
+        t.style.top = Math.floor(Math.random() * h) + 'px';
+        if (!bad) good += 1;
+        const life = setTimeout(() => { if (t.parentNode) t.remove(); }, beat.lifeMs);
+        mgTimers.push(life);
+        t.addEventListener('click', (e) => {
+          e.preventDefault(); clearTimeout(life); t.remove();
+          score = bad ? Math.max(0, score - 1) : score + 1;
+          s.setScore(score);
+        });
+        field.appendChild(t);
+      };
+      spawn();
+      mgTimers.push(setInterval(spawn, beat.spawnMs));
+      s.onEnd(() => endMinigame(beat, score, good));
+    }
+
+    // order：依座號 1→2→3 順序點，點錯閃紅、收完一輪重洗
+    function mgOrder(beat) {
+      let score = 0; const N = beat.count || 6, target = beat.target || 15;
+      const s = mgScaffold(beat, `✓ ${beat.verb}`), field = s.field;
+      let need = 1;
+      const round = () => {
+        field.innerHTML = ''; need = 1;
+        const w = Math.max(0, field.clientWidth - 52), h = Math.max(0, field.clientHeight - 52);
+        for (let n = 1; n <= N; n++) {
+          const t = document.createElement('div');
+          t.className = 'mgtile'; t.textContent = n;
+          t.style.left = Math.floor(Math.random() * w) + 'px';
+          t.style.top = Math.floor(Math.random() * h) + 'px';
+          t.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (Number(t.textContent) === need) {
+              t.classList.add('done'); need += 1; score += 1; s.setScore(score);
+              if (need > N) round();
+            } else {
+              t.classList.add('miss');
+              const tm = setTimeout(() => t.classList.remove('miss'), 250); mgTimers.push(tm);
+            }
+          });
+          field.appendChild(t);
+        }
+      };
+      round();
+      s.onEnd(() => endMinigame(beat, score, target));
+    }
+
+    // timing：指針掃過甜蜜區時點
+    function mgTiming(beat) {
+      let hit = 0, attempts = 0; const speed = beat.speed || 3, zoneW = 18;
+      const s = mgScaffold(beat, `✓ ${beat.verb}`), field = s.field;
+      field.innerHTML = '<div class="mgbar"><div class="mgzone" id="mgzone"></div>' +
+        '<div class="mgmarker" id="mgmark"></div></div>' +
+        '<div class="mgtaphint">指針進綠區時點任意處 →</div>';
+      let pos = 0, dir = 1, zoneL = 40;
+      const place = () => { zoneL = 8 + Math.floor(Math.random() * (74 - zoneW)); const z = c('mgzone'); if (z) { z.style.left = zoneL + '%'; z.style.width = zoneW + '%'; } };
+      place();
+      mgTimers.push(setInterval(() => {
+        pos += dir * speed;
+        if (pos >= 100) { pos = 100; dir = -1; } else if (pos <= 0) { pos = 0; dir = 1; }
+        const m = c('mgmark'); if (m) m.style.left = pos + '%';
+      }, 30));
+      field.addEventListener('click', (e) => {
+        e.preventDefault(); attempts += 1;
+        if (pos >= zoneL && pos <= zoneL + zoneW) {
+          hit += 1; s.setScore(hit); place();
+          field.classList.add('flash');
+          const tm = setTimeout(() => field.classList.remove('flash'), 120); mgTimers.push(tm);
+        }
+      });
+      s.onEnd(() => endMinigame(beat, hit, Math.max(beat.target || 10, attempts)));
+    }
+
+    // catch：物品落下，落地前點掉接住
+    function mgCatch(beat) {
+      let caught = 0, dropped = 0;
+      const s = mgScaffold(beat, `✓ ${beat.verb}`), field = s.field;
+      const spawn = () => {
+        const t = document.createElement('div');
+        t.className = 'mgtarget'; t.textContent = beat.emoji;
+        const w = Math.max(0, field.clientWidth - 50);
+        t.style.left = Math.floor(Math.random() * w) + 'px';
+        let top = -8; t.style.top = top + 'px'; dropped += 1;
+        field.appendChild(t);
+        const fall = setInterval(() => {
+          top += 6; t.style.top = top + 'px';
+          if (top > field.clientHeight) { clearInterval(fall); if (t.parentNode) t.remove(); }
+        }, 60);
+        mgTimers.push(fall);
+        t.addEventListener('click', (e) => { e.preventDefault(); clearInterval(fall); t.remove(); caught += 1; s.setScore(caught); });
+      };
+      spawn();
+      mgTimers.push(setInterval(spawn, beat.spawnMs));
+      s.onEnd(() => endMinigame(beat, caught, dropped));
+    }
+
+    function endMinigame(beat, score, max) {
       clearMg();
       const before = structuredClone(state);
-      const ratio = spawned ? hits / spawned : 0;
-      const scale = 0.4 + 0.6 * Math.min(1, ratio);   // 保底 0.4，永遠正獎勵
+      const ratio = max ? Math.min(1, score / max) : 0;
+      const scale = 0.4 + 0.6 * ratio;   // 保底 0.4，永遠正獎勵
+      const pct = Math.round(ratio * 100);
       const effects = {};
       for (const k in beat.reward) effects[k] = Math.max(1, Math.round(beat.reward[k] * scale));
       state = applyChoice(state, { id: beat.id, effects, octalysis: [2, 3] });
       const summary = Object.entries(effects).map(([k, v]) => `${STAT_LABEL[k] || k} +${v}`).join('　');
       c('opts').innerHTML = '';
       c('verdict').className = 'verdict best';
-      c('verdict').innerHTML = `<div>🎯 你${beat.verb}了 ${hits} 件！</div>` +
+      c('verdict').innerHTML = `<div>🎯 你${beat.verb} ${score} 次（表現 ${pct}%）</div>` +
         `<div style="font-weight:600;margin-top:5px">獎勵：${summary}</div>`;
       c('nextbtn').textContent = queue.length ? '繼續 →' : '本週結算 ✓';
       c('nextbtn').style.display = 'block';
