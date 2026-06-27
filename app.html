@@ -168,6 +168,15 @@
   .reportbtn:hover{background:#fff7e6;}
   .foot{padding:7px 14px; text-align:center; color:#7c8a7f; font-size:11px;
     background:#fff7e6; border-top:1px dashed #e8d28c; flex:none;}
+
+  /* 手機：放棄「整頁免捲動」，改讓內容自然堆疊＋可捲動，避免「下一題」按鈕被裁切卡死 */
+  @media (max-width:899px){
+    html,body{overflow:visible; height:auto;}
+    body{display:block; min-height:100%;}
+    .app{height:auto; min-height:100dvh; overflow:visible;}
+    .screen{min-height:0;}
+    .main,.scene,.qa,.opts{flex:none; min-height:0; overflow:visible;}
+  }
 </style>
 </head>
 <body>
