@@ -2,7 +2,8 @@ const STAT_KEYS = ['cohesion', 'climate', 'trust', 'honor', 'roleModel'];
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 
 // runSeed 決定平時週的抽題；省略時隨機產生（瀏覽器）。測試可帶固定值。
-export function createInitialState(runSeed) {
+// hard：困難版（校事會議地獄模式）——多一條「投訴壓力」資源、心力更稀缺、穿插校事會議與投訴卡。
+export function createInitialState(runSeed, hard = false) {
   return {
     week: 0,
     stats: { cohesion: 50, climate: 50, trust: 50, honor: 50, roleModel: 50 },
@@ -14,6 +15,8 @@ export function createInitialState(runSeed) {
     literacy: 0,        // 法規素養分（答對法規題累積）
     answered: 0,        // 已作答的法規題數
     correct: 0,         // 答對數
+    hard: !!hard,       // 困難版旗標
+    pressure: 0,        // 投訴壓力 0–100（僅困難版有意義）
     runSeed: runSeed ?? Math.floor(Math.random() * 1e9),
   };
 }

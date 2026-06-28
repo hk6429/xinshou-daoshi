@@ -18,6 +18,9 @@ export function gradeChoice(choice) {
   return { scored: false, literacy: 0, correctish: false }; // onEnter 等不計
 }
 
+// 投訴壓力夾在 0–100；困難版的核心黑帽資源（CD8 損失閃避）。
+export const clampPressure = (n) => Math.max(0, Math.min(100, n));
+
 export function applyChoice(state, choice) {
   let next = applyEffects(state, choice.effects);
   next = structuredClone(next);
@@ -31,6 +34,17 @@ export function applyChoice(state, choice) {
     next.answered = (next.answered || 0) + 1;
     next.literacy = (next.literacy || 0) + g.literacy;
     if (g.correctish) next.correct = (next.correct || 0) + 1;
+  }
+  // 困難版投訴壓力：會議／投訴卡帶顯式 pressure；一般法規題依分級微調
+  // （最佳解少給投訴把柄 −1、違法或失分落人口實 +2）。
+  if (next.hard) {
+    let dp = choice.pressure || 0;
+    if (g.scored) {
+      if (choice.tier === 'best') dp -= 1;
+      else if (choice.tier === 'illegal' || choice.tier === 'wrong') dp += 2;
+    }
+    if (typeof choice.resetPressureTo === 'number') next.pressure = choice.resetPressureTo;
+    if (dp) next.pressure = clampPressure((next.pressure || 0) + dp);
   }
   return next;
 }
@@ -66,11 +80,17 @@ const STAT_KEYS = ['cohesion', 'climate', 'trust', 'honor', 'roleModel'];
 export function advanceWeek(state) {
   let next = structuredClone(state);
   next.week += 1;
+  // 困難版：班級損耗更快、心力回血更少（CD6 稀缺），投訴壓力被動爬升（CD8）。
+  const hard = !!next.hard;
+  const decay = hard ? WEEKLY_DECAY + 1 : WEEKLY_DECAY;
+  const regen = hard ? 5 : WEEKLY_HP_REGEN;
   for (const k of STAT_KEYS) {
-    next.stats[k] = Math.max(30, next.stats[k] - WEEKLY_DECAY);
+    next.stats[k] = Math.max(30, next.stats[k] - decay);
   }
   // 週末休息：心力回復（上限 HP_CAP），讓「心力 0」是可恢復的低潮而非死局
-  next.resources.hp = Math.min(HP_CAP, next.resources.hp + WEEKLY_HP_REGEN);
+  next.resources.hp = Math.min(HP_CAP, next.resources.hp + regen);
+  if (hard) next.pressure = clampPressure((next.pressure || 0) + 1); // 家長群組從不打烊
+
   if (next.week === 10 && next.flags.delayedPenaltyW10) {
     next = applyEffects(next, { trust: -10 });
     next.flags.delayedPenaltyW10 = false;

@@ -97,6 +97,15 @@
   .chip.rank{background:linear-gradient(120deg,#fff2d4,#ffe6b0); color:#8a6210;
     border:1px solid #f0d28a;}
   .chip.streak{background:#fff0e8; color:#c4521f; border:1px solid #f3c8ac;}
+  .chip.pressure{background:#fdecec; color:#b23b2a; border:1px solid #f0bcb4;}
+  .chip.pressure.danger{animation:pulse 1.1s infinite;}
+  .chip.pressure b{color:#b23b2a;}
+  .diff{display:flex; gap:10px; justify-content:center; margin:4px 0 2px;}
+  .dpill{border:2px solid #e4ded0; background:#fff; border-radius:12px; padding:8px 14px;
+    cursor:pointer; font-weight:800; font-size:13.5px; color:#5a6b5f; transition:.12s; text-align:center;}
+  .dpill small{display:block; font-weight:600; font-size:11px; color:#8a978d; margin-top:2px;}
+  .dpill.sel{border-color:var(--green); background:#f1fbf5; color:var(--green-d); box-shadow:0 3px 0 var(--green-d);}
+  .dpill.hard.sel{border-color:#d9614e; background:#fcebe7; color:#b23b2a; box-shadow:0 3px 0 #b23b2a;}
   .chip.hp-low{background:#fcebe7; color:#b23b2a; border:1px solid #f0c2b9; animation:pulse 1.1s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
   .chip b{color:var(--green-d);}
@@ -152,9 +161,12 @@
   .opt.sel-best{border-color:var(--green); background:#e8f8ee;}
   .opt.sel-good{border-color:#e0a92a; background:#fff6e2;}
   .opt.sel-bad{border-color:#d9614e; background:#fcebe7;}
+  .opt.pending{border-color:var(--green); background:#f1fbf5; box-shadow:0 0 0 2px var(--green) inset, 0 2px 0 #e7e0d0;}
+  .opt.pending .n{background:var(--green); color:#fff;}
   .opt.dim{opacity:.5;}
   .verdict{margin-top:9px; flex:none; border-radius:12px; padding:10px 13px; font-size:13.5px;
     font-weight:700; line-height:1.5; display:none;}
+  .verdict.pending{display:block; background:#f1fbf5; color:var(--green-d); border:1.5px dashed var(--green);}
   .verdict.best{display:block; background:#e8f8ee; color:var(--green-d); border:1.5px solid #bfe6cf;}
   .verdict.good{display:block; background:#fff6e2; color:#9a6a00; border:1.5px solid #f0d28a;}
   .verdict.bad{display:block; background:#fcebe7; color:#b23b2a; border:1.5px solid #f0c2b9;}
@@ -242,6 +254,11 @@
           <div class="desc">溫柔專業・親和力強</div>
         </div>
       </div>
+      <div class="hint" style="margin-top:14px">選擇難度</div>
+      <div class="diff">
+        <div class="dpill sel" data-d="normal">🟢 一般版<small>專心練班級經營與法規</small></div>
+        <div class="dpill hard" data-d="hard">🔴 困難版<small>校事會議地獄・投訴調查不斷</small></div>
+      </div>
       <button class="enter" id="enterBtn">進入遊戲</button>
       <button class="back" id="backBtn">← 回首頁</button>
     </section>
@@ -260,6 +277,7 @@
         <span class="chip">💰 班費 <b id="chip-budget">0</b></span>
         <span class="chip">⚖️ 素養 <b id="chip-lit">0</b></span>
         <span class="chip streak" id="chip-streak">🔥 連對 0</span>
+        <span class="chip pressure" id="chip-pressure" style="display:none">⚠️ 投訴 <b id="chip-pressure-v">0</b>/100</span>
         <span class="chip rank" id="chip-rank">🎖 新手導師</span>
       </div>
       <div class="stats5" id="stats5"></div>
@@ -290,6 +308,7 @@
     import { resolveWeek } from './js/gameData.js';
     import { applyChoice, evalBranch, checkHiddenCombo, advanceWeek, gradeChoice, LITERACY_BY_TIER, needsSickLeave, SICK_LEAVE } from './js/engine.js';
     import { selectEnding } from './js/endings.js';
+    import { hardBeatsForWeek, SUSPENSION_BEAT, PRESSURE_DANGER } from './js/hardmode.js';
 
     const c = (id) => document.getElementById(id);
     const L = ['A','B','C','D','E'];
@@ -323,10 +342,17 @@
         card.classList.add('sel'); picked = card.dataset.g; c('enterBtn').classList.add('on');
       };
     });
+    let HARD = false;
+    document.querySelectorAll('.dpill').forEach((pill) => {
+      pill.onclick = () => {
+        document.querySelectorAll('.dpill').forEach((x) => x.classList.remove('sel'));
+        pill.classList.add('sel'); HARD = pill.dataset.d === 'hard';
+      };
+    });
     c('enterBtn').onclick = () => { if (!picked) return; GENDER = picked; show('game'); startGame(); };
 
     // ── 真引擎遊戲迴圈 ──
-    let state, week, queue, weekStart, scripted, dayDone, curBeat, phase, locked, streak, bestStreak;
+    let state, week, queue, weekStart, scripted, dayDone, curBeat, phase, locked, streak, bestStreak, pending;
 
     const sceneFor = (i) => `assets/scenes/w${i + 1}${GENDER === 'f' ? '_female' : ''}.png`;
 
@@ -351,14 +377,22 @@
       c('chip-lit').textContent = state.literacy || 0;
       c('chip-streak').textContent = `🔥 連對 ${streak}`;
       c('chip-rank').textContent = '🎖 ' + literacyRank(state.literacy || 0);
+      if (state.hard) {
+        const p = state.pressure || 0;
+        c('chip-pressure').style.display = '';
+        c('chip-pressure-v').textContent = p;
+        c('chip-pressure').classList.toggle('danger', p >= PRESSURE_DANGER);
+      } else {
+        c('chip-pressure').style.display = 'none';
+      }
       paintStats(prevForStats);
     }
 
     function startGame() {
-      state = createInitialState();
+      state = createInitialState(undefined, HARD);
       streak = 0; bestStreak = 0;
       saveState(state, localStorage);
-      c('foot').textContent = `${GENDER === 'f' ? '女' : '男'}老師版・40 週導師修煉・整頁免捲動`;
+      c('foot').textContent = `${GENDER === 'f' ? '女' : '男'}老師版・${HARD ? '🔴 困難版（校事會議地獄）' : '一般版'}・40 週導師修煉`;
       startWeek();
     }
 
@@ -370,9 +404,21 @@
       if (week.onEnter && Object.keys(week.onEnter).length) {
         state = applyChoice(state, { id: `onEnter_w${state.week}`, effects: week.onEnter, octalysis: [] });
       }
+      // 困難版：把當週的校事會議／投訴卡插進 days（clone 避免動到里程碑週共用陣列）
+      if (state.hard) {
+        const inj = hardBeatsForWeek(state.week);
+        if (inj.length) {
+          const days = [...week.days];
+          inj.forEach(({ day, beat }) => {
+            const at = Math.min(Math.max((day || 1) - 1, 0), days.length);
+            days.splice(at, 0, beat);
+          });
+          week = { ...week, days };
+        }
+      }
       queue = [...week.days];
-      // 事件卡 / 小遊戲（穿插關卡）不算「天數」：只有真正的法規題列入 5 天計數
-      scripted = new Set(week.days.filter((d) => !d.isEvent && !d.isMinigame).map((d) => d.id));
+      // 事件卡 / 小遊戲 / 校事會議 / 投訴卡（穿插關卡）不算「天數」：只有真正的法規題列入 5 天計數
+      scripted = new Set(week.days.filter((d) => !d.isEvent && !d.isMinigame && !d.isHearing && !d.isComplaint).map((d) => d.id));
       dayDone = 0;
       c('sceneimg').src = sceneFor(state.week);
       c('sceneweek').textContent = week.title;
@@ -382,6 +428,7 @@
     }
 
     function nextBeat() {
+      pending = null;
       if (queue.length === 0) return settle();
       const beat = queue.shift();
       if (beat.sickLeave) return renderSickLeave();
@@ -390,10 +437,12 @@
       if (isScripted) dayDone += 1;
       curBeat = beat; phase = 'play'; locked = false;
       const total = scripted.size || week.days.length;
-      const tag = beat.isEvent ? '🎲 突發事件' : (isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況');
+      const tag = beat.isHearing ? '⚖️ 校事會議' : beat.isComplaint ? '📢 家長投訴'
+        : beat.isEvent ? '🎲 突發事件' : (isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況');
       c('badge').textContent = `第${state.week + 1}週 ・ ${tag}`;
       dots().forEach((d, k) => d.classList.toggle('on', k < dayDone - (isScripted ? 1 : 0)));
-      c('who').textContent = beat.isEvent ? (beat.title || '突發事件')
+      c('who').textContent = (beat.isHearing || beat.isComplaint) ? (beat.title || '')
+        : beat.isEvent ? (beat.title || '突發事件')
         : (beat.law ? beat.law.replace(/[（）()]/g, '') || '情境判讀' : '情境判讀');
       c('q').textContent = beat.prompt;
       c('verdict').className = 'verdict'; c('verdict').textContent = '';
@@ -403,10 +452,23 @@
       shuffled.forEach((ch, k) => {
         const o = document.createElement('div'); o.className = 'opt';
         o.innerHTML = `<span class="n">${L[k]}</span><span class="t">${esc(ch.label)}</span>`;
-        o.onclick = () => choose(o, ch);
+        o.onclick = () => onOpt(o, ch);
         op.appendChild(o);
       });
       paintHud();
+    }
+
+    // 誤按修正（確認制）：第一次點＝預選（不計分、可改），再點同一選項或按 Enter/空白＝確認送出。
+    function onOpt(o, ch) {
+      if (locked) return;
+      if (pending && pending.o === o) return choose(o, ch); // 同一選項再點＝確認
+      pending = { o, ch };
+      const kids = [...c('opts').children];
+      kids.forEach((x) => x.classList.remove('pending'));
+      o.classList.add('pending');
+      const letter = L[kids.indexOf(o)];
+      c('verdict').className = 'verdict pending';
+      c('verdict').innerHTML = `<div>已選 <b>${letter}</b> ── 再點一次這個選項，或按 Enter／空白鍵確認。想改答案？直接點其他選項。</div>`;
     }
 
     function renderSickLeave() {
@@ -619,15 +681,25 @@
 
     function choose(o, ch) {
       if (locked) return; locked = true;
+      pending = null;
+      [...c('opts').children].forEach((x) => x.classList.remove('pending'));
       const beforeChoice = structuredClone(state);
       state = applyChoice(state, ch);
-      // 突發事件卡：無對錯、不計素養/連對，只顯示這個選擇帶來的結果與數值起伏
-      if (curBeat.isEvent) {
+      // 困難版：投訴壓力爆表 → 插入停聘調查（不秒殺，重罰後壓回 60）
+      if (state.hard && (state.pressure || 0) >= 100 && curBeat.id !== 'hr_suspend') {
+        queue.unshift(SUSPENSION_BEAT);
+      }
+      // 無對錯關卡（突發事件卡／校事會議／家長投訴）：不計素養與連對，只顯示結果與數值起伏
+      if (curBeat.isEvent || curBeat.isHearing || curBeat.isComplaint) {
         [...c('opts').children].forEach((x) => { if (x !== o) x.classList.add('dim'); });
         o.classList.add('sel-good');
         if (needsSickLeave(state)) queue.unshift({ id: `sick_${state.week}_${dayDone}`, sickLeave: true });
+        const icon = curBeat.isHearing ? '⚖️' : curBeat.isComplaint ? '📢' : '🎲';
+        const dpres = (state.pressure || 0) - (beforeChoice.pressure || 0);
+        const presLine = state.hard && dpres
+          ? `<div style="font-weight:600;margin-top:5px">⚠️ 投訴壓力 ${dpres > 0 ? '+' : ''}${dpres}（目前 ${state.pressure || 0}/100）</div>` : '';
         c('verdict').className = 'verdict good';
-        c('verdict').innerHTML = `<div>🎲 ${esc(ch.outcome || '')}</div>`;
+        c('verdict').innerHTML = `<div>${icon} ${esc(ch.outcome || '')}</div>` + presLine;
         c('nextbtn').textContent = queue.length ? '繼續 →' : '本週結算 ✓';
         c('nextbtn').style.display = 'block';
         paintHud(beforeChoice);
@@ -723,12 +795,15 @@
       else startGame();
     };
 
-    // 鍵盤操作：數字 1–5 = 選項 A–E（未鎖定時直接作答）；Enter／空白 = 下一步（按鈕已出現時）
+    // 鍵盤操作：數字 1–5 = 預選選項 A–E（再按同一鍵或 Enter 確認）；
+    // Enter／空白 = 有預選就確認送出，否則點「下一步」。
     document.addEventListener('keydown', (e) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const next = c('nextbtn');
-      if ((e.key === 'Enter' || e.key === ' ') && next && next.style.display !== 'none') {
-        e.preventDefault(); next.click(); return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (!locked && pending) { e.preventDefault(); choose(pending.o, pending.ch); return; }
+        if (next && next.style.display !== 'none') { e.preventDefault(); next.click(); }
+        return;
       }
       if (e.key >= '1' && e.key <= '5' && !locked) {
         const opt = c('opts').querySelectorAll('.opt')[Number(e.key) - 1];

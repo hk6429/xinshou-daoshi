@@ -19,6 +19,8 @@ export function deriveOutcome(state) {
     minStat: Math.min(...statVals),
     avgStat: Math.round(statVals.reduce((a, b) => a + b, 0) / statVals.length),
     oct,
+    hard: !!state.hard,
+    pressure: state.pressure || 0,
   };
 }
 
@@ -26,6 +28,16 @@ export function deriveOutcome(state) {
 // mechanism：對外說明「怎麼達成」（放在結局網頁）
 // cond(o)：用 deriveOutcome 結果判定
 export const ENDINGS = [
+  // ───────── 困難版專屬（校事會議地獄模式；只在 hard 時觸發，置頂優先判定）─────────
+  { id: 'hd_clear', kind: 'good', title: '清白歸來', img: 'assets/endings/e04.png',
+    desc: '一整年的家長投訴與校事會議反覆訪談，你都據實以對、依法以行。調查還你清白，你昂首走完這一年——沒有人能否定你帶過這一班。',
+    mechanism: '困難版：撐完 40 週，結業時投訴壓力 ≤ 40 且 五項指標平均 ≥ 55（守住清白也守住班級）。',
+    cond: (o) => o.hard && o.pressure <= 40 && o.avgStat >= 55 },
+  { id: 'hd_resign', kind: 'effort', title: '黯然請辭', img: 'assets/endings/e29.png',
+    desc: '投訴沒有停過，調查一場接一場，學年末你終究遞出了辭呈。這不是你不夠好——是這套制度太重。願你休息夠了，還願意再回到孩子身邊。',
+    mechanism: '困難版：結業時投訴壓力 ≥ 85（壓力長期失控，瀕臨停聘）。',
+    cond: (o) => o.hard && o.pressure >= 85 },
+
   // ───────── 20 正向 ─────────
   { id: 'e01', kind: 'good', title: '法規典範導師', img: 'assets/endings/e01.png',
     desc: '你把每一條教師法、通報與管教規範都內化成直覺，成為全校信賴的法規後盾。',
