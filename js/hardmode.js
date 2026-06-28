@@ -118,15 +118,132 @@ export const COMPLAINTS = [
   },
 ];
 
-// beat 轉換（與題目／事件卡同放 week.days，靠 isHearing / isComplaint 分流）
+// ───────── 每週突發事件（困難版每一週都會發生一件事）─────────
+// 困難版的核心壓力來源：每週都有一個突發狀況要拆。每個選項標 q：
+//   q=2 妥善處理（壓力下降、可平息）／q=1 普通（壓力小漲）／q=0 處理失當（壓力大漲、引爆投訴連鎖）。
+// 只要選到 q=0，接下來幾週會被「無止境投訴」連鎖纏上，直到你某一週把它處理好。
+export const WEEKLY_INCIDENTS = [
+  { id: 'wi_fight', isIncident: true, title: '突發・學生打架', prompt: '下課鐘響沒多久，兩個男生在走廊扭打起來，圍觀的同學越聚越多。你第一時間怎麼處理？',
+    choices: [
+      { q: 2, label: '立刻分開兩人、確認有無受傷，冷靜後分別了解原因並通知雙方家長', effects: { climate: 3, trust: 3 }, pressure: -4, outcome: '你處置明快又依程序，雙方家長都認可你的公正。' },
+      { q: 1, label: '先各記一支警告，要他們自己冷靜', effects: { climate: -1 }, pressure: 3, outcome: '事情壓下來了，但沒人覺得被真正聽見。' },
+      { q: 0, label: '當眾大聲斥責、要兩人罰站示眾', effects: { climate: -4, trust: -4 }, pressure: 9, outcome: '公開羞辱的畫面被同學拍下，家長氣得截圖開告。' },
+    ] },
+  { id: 'wi_line', isIncident: true, title: '突發・家長 LINE 暴怒', prompt: '深夜十一點，一位家長在 LINE 連發十幾則訊息，質問你今天為什麼沒處理他孩子被排擠的事。你怎麼回？',
+    choices: [
+      { q: 2, label: '隔早第一時間回電、約面談，把今天的觀察與後續計畫講清楚', effects: { trust: 4 }, pressure: -4, outcome: '誠懇又有規劃的回應，讓家長從焦慮轉為信任。' },
+      { q: 1, label: '當下簡短回「我明天處理」先止血', effects: {}, pressure: 3, outcome: '暫時安撫，但家長覺得被敷衍。' },
+      { q: 0, label: '已讀不回，想說明天再說', effects: { trust: -4 }, pressure: 9, outcome: '隔天家長把對話截圖貼上家長社團，質疑你不理家長。' },
+    ] },
+  { id: 'wi_injury', isIncident: true, title: '突發・學生受傷', prompt: '體育課一個學生跌倒，手腕腫起來。你必須馬上決定怎麼處理。',
+    choices: [
+      { q: 2, label: '立即送保健室、依流程通知家長與填寫意外記錄，全程陪同', effects: { trust: 4, honor: 2 }, pressure: -4, outcome: '你依規處置、滴水不漏，家長對你的細心很放心。' },
+      { q: 1, label: '先冰敷觀察，下課再通知家長', effects: {}, pressure: 4, outcome: '處理不算錯，但通知慢了讓家長有點不安。' },
+      { q: 0, label: '覺得是小傷，叫他自己休息一下', effects: { trust: -5, honor: -3 }, pressure: 10, outcome: '回家才發現是骨裂，家長怒控你延誤就醫。' },
+    ] },
+  { id: 'wi_bully', isIncident: true, title: '突發・疑似霸凌通報', prompt: '有學生私下告訴你，班上某個孩子長期被嘲笑、排擠。這可能構成校園霸凌，怎麼辦？',
+    choices: [
+      { q: 2, label: '依校園霸凌防制準則啟動通報與輔導，保護當事人並蒐集事證', effects: { trust: 4, roleModel: 3 }, pressure: -3, outcome: '你依法依程序處理，守住了每一個孩子。' },
+      { q: 1, label: '先私下勸導幾個帶頭的同學', effects: { climate: 1 }, pressure: 4, outcome: '表面平息，但沒留下任何處理紀錄。' },
+      { q: 0, label: '覺得只是孩子間玩鬧，要被嘲笑的別太敏感', effects: { trust: -5, roleModel: -4 }, pressure: 11, outcome: '受害學生家長得知後，控訴你吃案、未通報。' },
+    ] },
+  { id: 'wi_phone', isIncident: true, title: '突發・手機沒收爭議', prompt: '你依校規沒收一名學生上課玩的手機，他家長氣沖沖打來說你「侵犯財產權」。',
+    choices: [
+      { q: 2, label: '依校規與班級公約說明處置，並約定領回方式，留下紀錄', effects: { honor: 3, trust: 2 }, pressure: -3, outcome: '規則清楚、程序到位，家長無話可說。' },
+      { q: 1, label: '先把手機還他，避免衝突', effects: {}, pressure: 4, outcome: '息事寧人，但班上規矩開始鬆動。' },
+      { q: 0, label: '回嗆家長「不爽去跟校長講」', effects: { trust: -5, climate: -2 }, pressure: 10, outcome: '家長真的投訴到校長室，還錄了音。' },
+    ] },
+  { id: 'wi_cheat', isIncident: true, title: '突發・段考作弊', prompt: '監考時你發現一名平時乖巧的學生作弊。處理要兼顧校規與孩子的自尊。',
+    choices: [
+      { q: 2, label: '依規處理該科成績，私下了解原因並輔導，保留他的尊嚴', effects: { roleModel: 4, trust: 2 }, pressure: -3, outcome: '你守住原則也接住孩子，家長反而感謝你的方式。' },
+      { q: 1, label: '當場沒收考卷、記過了事', effects: { climate: -1 }, pressure: 4, outcome: '依規處理，但孩子覺得被當眾定罪。' },
+      { q: 0, label: '在全班面前點名羞辱、要他公開道歉', effects: { trust: -5, climate: -3 }, pressure: 10, outcome: '孩子崩潰大哭，家長控訴你公開羞辱、傷害身心。' },
+    ] },
+  { id: 'wi_fee', isIncident: true, title: '突發・班費爭議', prompt: '有家長質疑這學期班費收支不清，要求你交代每一筆錢的去向。',
+    choices: [
+      { q: 2, label: '攤開完整收支明細與收據，主動公開讓全班家長檢視', effects: { trust: 4, honor: 2 }, pressure: -4, outcome: '帳目透明清楚，質疑瞬間瓦解，反而贏得信任。' },
+      { q: 1, label: '口頭說明大概用途', effects: {}, pressure: 4, outcome: '講是講了，但沒有單據，家長半信半疑。' },
+      { q: 0, label: '覺得被冒犯，拒絕「被當賊查」', effects: { trust: -5 }, pressure: 10, outcome: '拒查的態度坐實了家長的懷疑，投訴升級。' },
+    ] },
+  { id: 'wi_emotion', isIncident: true, title: '突發・學生情緒崩潰', prompt: '一個學生在課堂上突然情緒失控、嚎啕大哭，全班都嚇到了。你怎麼接住這一刻？',
+    choices: [
+      { q: 2, label: '先穩住全班、把孩子帶到安靜處陪伴，聯繫輔導室與家長', effects: { climate: 3, roleModel: 4 }, pressure: -3, outcome: '你溫柔又專業地接住孩子，家長深深感謝。' },
+      { q: 1, label: '請他先到走廊冷靜，繼續上課', effects: {}, pressure: 4, outcome: '課是上完了，但孩子覺得被晾在一邊。' },
+      { q: 0, label: '要他「別在課堂上鬧情緒」', effects: { trust: -4, climate: -3 }, pressure: 9, outcome: '家長得知後，控訴你漠視孩子的求救訊號。' },
+    ] },
+  { id: 'wi_trip', isIncident: true, title: '突發・校外教學安全', prompt: '校外教學途中，一個孩子脫隊不見了十分鐘。你怎麼處理這個驚險時刻？',
+    choices: [
+      { q: 2, label: '立即啟動分組清點、通報領隊與家長，冷靜協尋並安撫其他學生', effects: { trust: 4, honor: 2 }, pressure: -3, outcome: '你臨危不亂、程序滴水不漏，孩子很快找回，家長後怕又信服。' },
+      { q: 1, label: '自己先四處找，找到再說', effects: {}, pressure: 5, outcome: '孩子找回了，但你沒同步通報，家長覺得草率。' },
+      { q: 0, label: '等他自己回來，繼續行程', effects: { trust: -6, honor: -3 }, pressure: 11, outcome: '家長事後得知你毫無作為，怒不可遏地投訴。' },
+    ] },
+  { id: 'wi_post', isIncident: true, title: '突發・班級貼文外流', prompt: '你在班級臉書社團分享的活動照，被家長截圖質疑「沒經過同意就公開我孩子的臉」。',
+    choices: [
+      { q: 2, label: '立即下架照片、誠懇致歉並說明往後拍攝同意流程', effects: { trust: 3 }, pressure: -3, outcome: '你迅速負責的態度，把一場肖像權風波化於無形。' },
+      { q: 1, label: '把那張照片打碼處理', effects: {}, pressure: 4, outcome: '處理了，但沒說明流程，家長仍有疑慮。' },
+      { q: 0, label: '覺得家長小題大作、堅持不撤', effects: { trust: -5 }, pressure: 10, outcome: '家長以侵犯肖像權為由，向學校正式申訴。' },
+    ] },
+  { id: 'wi_absent', isIncident: true, title: '突發・頻繁缺曠', prompt: '一個學生最近常常無故缺席，家長卻說「我每天都有送他出門」。中間出了什麼事？',
+    choices: [
+      { q: 2, label: '依中輟預警機制通報、家訪了解狀況，連結輔導資源', effects: { trust: 4, roleModel: 3 }, pressure: -3, outcome: '你及時拉住了一個可能墜落的孩子，家長感激涕零。' },
+      { q: 1, label: '先打電話提醒家長盯緊一點', effects: {}, pressure: 4, outcome: '提醒了，但沒進一步追查，問題還在。' },
+      { q: 0, label: '直接記曠課，當作學生自己的問題', effects: { trust: -4, roleModel: -3 }, pressure: 9, outcome: '後來才知孩子在外出事，家長控訴你失職未通報。' },
+    ] },
+  { id: 'wi_seat', isIncident: true, title: '突發・座位糾紛', prompt: '你重新排座位後，一位家長堅持孩子被安排到「壞學生」旁邊是針對，要求立刻換回。',
+    choices: [
+      { q: 2, label: '說明排座的教育考量與輪換原則，邀家長一起關注孩子適應', effects: { trust: 3, climate: 2 }, pressure: -3, outcome: '你把標籤化的對話拉回成長，家長理解並配合。' },
+      { q: 1, label: '直接幫他換到前面省麻煩', effects: {}, pressure: 4, outcome: '換了，但其他家長開始跟進要求特殊待遇。' },
+      { q: 0, label: '回家長「每個孩子在我眼裡都一樣，不換」', effects: { trust: -3, climate: -2 }, pressure: 8, outcome: '生硬的回應被解讀成不通人情，家長到處抱怨。' },
+    ] },
+];
+
+// ───────── 無止境投訴連鎖（處理失當後，一週接一週纏上來，直到你拆掉它）─────────
+// chain 越高，串連越大、壓力越重；只要某一週選到 q=2「正面處理」即可掐斷（chain 歸零）。
+const ESCALATION_TIERS = [
+  { who: '家長在班級群組公開點名', lead: '昨天那件事沒處理好，那位家長在班級 LINE 群組公開點名你，其他家長開始跟風發問。' },
+  { who: '幾位家長串連要求說明', lead: '事情發酵了。幾位家長串連起來，連署要求你到班親會公開說明，否則就往上反映。' },
+  { who: '投訴鬧上爆料社團', lead: '有人把整件事貼上地方爆料社團，標題聳動、留言一面倒，學校開始接到關切電話。' },
+  { who: '家長投書教育局', lead: '家長正式投書教育局與議員服務處，並揚言要求啟動校事會議調查。事情已經滾出校門。' },
+];
+
+// 依連鎖深度產生一張「投訴升級」beat：選對掐斷、選錯繼續滾大。
+export function escalationBeat(chain) {
+  const t = ESCALATION_TIERS[Math.min(chain - 1, ESCALATION_TIERS.length - 1)];
+  const up = 6 + chain * 2;   // 處理失當時壓力漲幅隨連鎖加重
+  return {
+    id: `esc_${chain}`, isComplaint: true, escalation: true, title: `📢 投訴連鎖・第 ${chain} 波`,
+    prompt: `${t.lead}\n你要怎麼止血？`,
+    choices: [
+      { q: 2, label: '正面回應：公開說明、提出佐證與改善方案，把事情攤在陽光下', effects: { trust: 4, honor: 3, hp: -6 }, pressure: -(8 + chain * 2), octalysis: [3, 4], outcome: '你不迴避、拿出證據與誠意，這一波投訴在事實面前止住了。連鎖被掐斷。' },
+      { q: 1, label: '低調道歉先安撫，盼風頭過去', effects: { hp: -5 }, pressure: Math.round(up * 0.4), octalysis: [8], outcome: '暫時壓下去了，但沒有真正解決，火苗還在悶燒。' },
+      { q: 0, label: '硬碰硬／不理會，覺得清者自清', effects: { trust: -5, hp: -5 }, pressure: up, octalysis: [8], outcome: '沉默與對抗只讓事情越滾越大，下一波來得更兇。' },
+    ],
+  };
+}
+
+// beat 轉換（與題目／事件卡同放 week.days，靠 isHearing / isComplaint / isIncident 分流）
 export function hearingToBeat(h) { return { ...h }; }
 export function complaintToBeat(cp) { return { ...cp }; }
 
-// 困難版：回傳某週要插入的 beats（含插在第幾天之前）。會議插第 3 天、投訴插第 2 天。
-export function hardBeatsForWeek(weekIndex) {
+// 小型決定性 hash：用 (week, seed) 穩定選一個每週事件，避免相鄰兩週重複。
+function pickIncident(weekIndex, runSeed) {
+  let h = (runSeed >>> 0) ^ 0x9e3779b9;
+  h = Math.imul(h ^ weekIndex, 0x85ebca6b) >>> 0;
+  const i = h % WEEKLY_INCIDENTS.length;
+  return { ...WEEKLY_INCIDENTS[i] };
+}
+
+// 困難版：回傳某週要插入的 beats（含插在第幾天之前）。
+//   - 投訴連鎖進行中（chain>0）→ 該週插「投訴升級」beat（取代一般突發事件）。
+//   - 否則 → 插當週的突發事件。
+//   - 會議週（11/23/34）額外插一場校事會議。
+// 會議插第 3 天、突發事件／投訴插第 2 天。
+export function hardBeatsForWeek(weekIndex, runSeed = 1, chain = 0) {
   const out = [];
-  if (COMPLAINT_WEEKS[weekIndex] != null) {
-    out.push({ day: 2, beat: complaintToBeat(COMPLAINTS[COMPLAINT_WEEKS[weekIndex]]) });
+  if (chain > 0) {
+    out.push({ day: 2, beat: escalationBeat(chain) });
+  } else {
+    out.push({ day: 2, beat: pickIncident(weekIndex, runSeed) });
   }
   if (HEARING_WEEKS[weekIndex] != null) {
     out.push({ day: 3, beat: hearingToBeat(HEARINGS[HEARING_WEEKS[weekIndex]]) });

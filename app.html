@@ -404,9 +404,9 @@
       if (week.onEnter && Object.keys(week.onEnter).length) {
         state = applyChoice(state, { id: `onEnter_w${state.week}`, effects: week.onEnter, octalysis: [] });
       }
-      // 困難版：把當週的校事會議／投訴卡插進 days（clone 避免動到里程碑週共用陣列）
+      // 困難版：把當週的突發事件／投訴連鎖／校事會議插進 days（clone 避免動到里程碑週共用陣列）
       if (state.hard) {
-        const inj = hardBeatsForWeek(state.week);
+        const inj = hardBeatsForWeek(state.week, state.runSeed, state.complaintChain || 0);
         if (inj.length) {
           const days = [...week.days];
           inj.forEach(({ day, beat }) => {
@@ -417,8 +417,8 @@
         }
       }
       queue = [...week.days];
-      // 事件卡 / 小遊戲 / 校事會議 / 投訴卡（穿插關卡）不算「天數」：只有真正的法規題列入 5 天計數
-      scripted = new Set(week.days.filter((d) => !d.isEvent && !d.isMinigame && !d.isHearing && !d.isComplaint).map((d) => d.id));
+      // 事件卡 / 小遊戲 / 校事會議 / 投訴 / 突發事件（穿插關卡）不算「天數」：只有真正的法規題列入 5 天計數
+      scripted = new Set(week.days.filter((d) => !d.isEvent && !d.isMinigame && !d.isHearing && !d.isComplaint && !d.isIncident).map((d) => d.id));
       dayDone = 0;
       c('sceneimg').src = sceneFor(state.week);
       c('sceneweek').textContent = week.title;
@@ -437,11 +437,12 @@
       if (isScripted) dayDone += 1;
       curBeat = beat; phase = 'play'; locked = false;
       const total = scripted.size || week.days.length;
-      const tag = beat.isHearing ? '⚖️ 校事會議' : beat.isComplaint ? '📢 家長投訴'
+      const tag = beat.isHearing ? '⚖️ 校事會議' : beat.isComplaint ? '📢 投訴連鎖'
+        : beat.isIncident ? '🔥 突發狀況'
         : beat.isEvent ? '🎲 突發事件' : (isScripted ? `第 ${dayDone} / ${total} 天` : '⚠ 追加狀況');
       c('badge').textContent = `第${state.week + 1}週 ・ ${tag}`;
       dots().forEach((d, k) => d.classList.toggle('on', k < dayDone - (isScripted ? 1 : 0)));
-      c('who').textContent = (beat.isHearing || beat.isComplaint) ? (beat.title || '')
+      c('who').textContent = (beat.isHearing || beat.isComplaint || beat.isIncident) ? (beat.title || '')
         : beat.isEvent ? (beat.title || '突發事件')
         : (beat.law ? beat.law.replace(/[（）()]/g, '') || '情境判讀' : '情境判讀');
       c('q').textContent = beat.prompt;
@@ -689,17 +690,29 @@
       if (state.hard && (state.pressure || 0) >= 100 && curBeat.id !== 'hr_suspend') {
         queue.unshift(SUSPENSION_BEAT);
       }
-      // 無對錯關卡（突發事件卡／校事會議／家長投訴）：不計素養與連對，只顯示結果與數值起伏
-      if (curBeat.isEvent || curBeat.isHearing || curBeat.isComplaint) {
+      // 無對錯關卡（突發事件／校事會議／投訴連鎖）：不計素養與連對，只顯示結果與數值起伏
+      if (curBeat.isEvent || curBeat.isHearing || curBeat.isComplaint || curBeat.isIncident) {
+        // 投訴連鎖：突發事件／投訴 beat 處理失當（q=0）→ 連鎖 +1（之後每週纏上來）；
+        // 妥善處理（q=2）→ 連鎖歸零掐斷；普通（q=1）→ 維持現狀。
+        if (curBeat.isIncident || curBeat.escalation) {
+          if (ch.q === 0) state.complaintChain = (state.complaintChain || 0) + 1;
+          else if (ch.q === 2) state.complaintChain = 0;
+        }
         [...c('opts').children].forEach((x) => { if (x !== o) x.classList.add('dim'); });
         o.classList.add('sel-good');
         if (needsSickLeave(state)) queue.unshift({ id: `sick_${state.week}_${dayDone}`, sickLeave: true });
-        const icon = curBeat.isHearing ? '⚖️' : curBeat.isComplaint ? '📢' : '🎲';
+        const icon = curBeat.isHearing ? '⚖️' : curBeat.isComplaint ? '📢' : curBeat.isIncident ? '🔥' : '🎲';
         const dpres = (state.pressure || 0) - (beforeChoice.pressure || 0);
         const presLine = state.hard && dpres
           ? `<div style="font-weight:600;margin-top:5px">⚠️ 投訴壓力 ${dpres > 0 ? '+' : ''}${dpres}（目前 ${state.pressure || 0}/100）</div>` : '';
+        let chainLine = '';
+        if (curBeat.isIncident || curBeat.escalation) {
+          const ch0 = state.complaintChain || 0;
+          if (ch.q === 2 && curBeat.escalation) chainLine = `<div style="font-weight:600;margin-top:5px">✓ 你掐斷了這串投訴，連鎖止住。</div>`;
+          else if (ch0 > 0) chainLine = `<div style="font-weight:600;margin-top:5px">⛓ 沒處理好——投訴連鎖未止，下週第 ${ch0} 波會纏上來。</div>`;
+        }
         c('verdict').className = 'verdict good';
-        c('verdict').innerHTML = `<div>${icon} ${esc(ch.outcome || '')}</div>` + presLine;
+        c('verdict').innerHTML = `<div>${icon} ${esc(ch.outcome || '')}</div>` + presLine + chainLine;
         c('nextbtn').textContent = queue.length ? '繼續 →' : '本週結算 ✓';
         c('nextbtn').style.display = 'block';
         paintHud(beforeChoice);

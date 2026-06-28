@@ -49,7 +49,7 @@
   <div class="wrap">
     <header>
       <h1>🏫 班級結局圖鑑</h1>
-      <p>一學年的選擇，決定你帶出什麼樣的班級。共 30 種結局——20 正向、10 待努力。</p>
+      <p>一學年的選擇，決定你帶出什麼樣的班級。共 32 種結局——20 正向、10 待努力，外加 2 種困難版專屬。</p>
       <a class="back" href="app.html">← 回遊戲</a>
     </header>
 
@@ -64,6 +64,12 @@
       <p class="lead">這些代表某個面向失衡了——下一年的成長方向。</p>
     </div>
     <div class="grid" id="effort"></div>
+
+    <div class="sec" style="margin-top:10px;">
+      <h2>🔴 困難版專屬 <span class="tag effort">2 種</span></h2>
+      <p class="lead">校事會議地獄模式限定：在家長投訴與校事會議反覆訪談下撐完一整年，依「投訴壓力」走向兩種截然不同的結局。</p>
+    </div>
+    <div class="grid" id="hard"></div>
 
     <footer>新手導師養成記 ・ 結局依「結業時的最終狀態」自動判定</footer>
   </div>
@@ -85,9 +91,11 @@
       </div>`;
     }
     document.getElementById('good').innerHTML =
-      ENDINGS.filter((e) => e.kind === 'good').map(card).join('');
+      ENDINGS.filter((e) => e.kind === 'good' && !e.hard).map(card).join('');
     document.getElementById('effort').innerHTML =
-      ENDINGS.filter((e) => e.kind === 'effort').map(card).join('');
+      ENDINGS.filter((e) => e.kind === 'effort' && !e.hard).map(card).join('');
+    document.getElementById('hard').innerHTML =
+      ENDINGS.filter((e) => e.hard).map(card).join('');
     // 圖片載入成功就隱藏「生成中」字樣
     document.querySelectorAll('.card .pic').forEach((pic) => {
       const url = pic.style.backgroundImage.slice(5, -2);

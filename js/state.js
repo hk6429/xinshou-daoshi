@@ -17,6 +17,7 @@ export function createInitialState(runSeed, hard = false) {
     correct: 0,         // 答對數
     hard: !!hard,       // 困難版旗標
     pressure: 0,        // 投訴壓力 0–100（僅困難版有意義）
+    complaintChain: 0,  // 投訴連鎖深度：處理失當每週纏上來，妥善處理歸零
     runSeed: runSeed ?? Math.floor(Math.random() * 1e9),
   };
 }
